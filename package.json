@@ -1,6 +1,7 @@
 {
   "name": "mantine-next-template",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -17,13 +18,25 @@
     "prettier:write": "prettier --write \"**/*.{ts,tsx}\"",
     "test": "npm run prettier:check && npm run lint && npm run typecheck && npm run jest",
     "storybook": "storybook dev -p 6006",
-    "storybook:build": "storybook build"
+    "storybook:build": "storybook build",
+    "watch": "tsc --watch",
+    "test:db": "tsx drizzle/dbTestAndReset/testDB.ts",
+    "run:drizzleConfig": "tsx drizzle.config.ts",
+    "generate-migration": "drizzle-kit generate --config=drizzle.config.ts",
+    "migrate:drizzle": "drizzle-kit migrate --config=drizzle.config.ts",
+    "push-migration": "yarn drizzle-kit push --config=drizzle.config.ts",
+    "drop-migration": "yarn drizzle-kit drop --config=drizzle.config.ts",
+    "reset-db": "tsx drizzle/dbTestAndReset/resetDatabase.ts",
+    "seed-db": "tsx drizzle/database/seed.ts"
   },
   "dependencies": {
     "@mantine/core": "7.16.3",
     "@mantine/hooks": "7.16.3",
+    "@neondatabase/serverless": "^0.10.4",
     "@next/bundle-analyzer": "^15.1.5",
     "@tabler/icons-react": "^3.28.1",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.39.3",
     "next": "15.1.5",
     "react": "19.0.0",
     "react-dom": "19.0.0"
@@ -43,6 +56,7 @@
     "@types/node": "^22.10.7",
     "@types/react": "19.0.7",
     "babel-loader": "^9.2.1",
+    "drizzle-kit": "^0.30.4",
     "eslint": "^9.18.0",
     "eslint-config-mantine": "^4.0.3",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -52,12 +66,13 @@
     "postcss": "^8.5.1",
     "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "^7.0.1",
-    "prettier": "^3.4.2",
     "storybook": "^8.5.0",
     "storybook-dark-mode": "^4.0.2",
     "stylelint": "^16.13.2",
     "stylelint-config-standard-scss": "^14.0.0",
     "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "5.7.3",
     "typescript-eslint": "^8.20.0"
   },
