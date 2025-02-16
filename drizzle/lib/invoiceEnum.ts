@@ -1,4 +1,4 @@
 export enum InvoiceStatus {
-    Paid = "Paid",
-    Unpaid = "Unpaid",
-  }
+  Paid = 'Paid',
+  Unpaid = 'Unpaid',
+}

@@ -1,6 +1,5 @@
 import { sql } from 'drizzle-orm';
-
-import { db } from '../database/db';  // Adjust the import path if necessary
+import { db } from '../database/db'; // Adjust the import path if necessary
 
 async function testDbConnection() {
   try {
