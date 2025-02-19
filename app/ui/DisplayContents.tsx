@@ -1,5 +1,5 @@
 import { CustomerRequestData } from '../types/customerTypes';
-import { InvoiceRequestData } from '../types/invoiceTypes';
+import { InvoiceTableData } from '../types/invoiceTypes';
 import { getBaseUrl } from '../utility/getBaseUrl';
 import { TabularDisplay } from './TabularDisplay';
 
@@ -18,11 +18,12 @@ export async function DisplayContents({
     const baseURL = await getBaseUrl();
 
     const response = await fetch(`${baseURL}${apiResource}${queryParams}`);
+
     if (!response.ok) {
       throw new Error(`Couldn't retreive ${apiResource} data.`);
     }
 
-    const data: CustomerRequestData[] | InvoiceRequestData[] = await response.json();
+    const data: CustomerRequestData[] | InvoiceTableData[] = await response.json();
 
     return <TabularDisplay tableHeadings={displayHeadings} data={data} dataType={dataType} />;
 
