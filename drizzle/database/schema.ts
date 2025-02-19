@@ -2,7 +2,7 @@
 
 /*
     To genearte migration with specific name: 
-    `yarn generate-gration --name=test_migration` OR
+    `yarn generate-migration --name=<MIGRATION_NAME>` OR
     `yarn drizzle-kit generate --config ./drizzle/drizzle.config.ts --name <name_of_schema_updates>`
 
     To drop migration:
@@ -68,7 +68,7 @@ export const Invoices = pgTable('invoices', {
   customerId: integer('customer_id')
     .references(() => Customer.customerId)
     .notNull(),
-  invoiceNumber: text('invoice_Number').unique().notNull(),
+  invoiceNumber: text('invoice_number').unique().notNull(),
   // 10 digits for integer part and 2 digits for fractional part
   amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
   amountPaid: decimal('amount_paid', { precision: 10, scale: 2 }).default('0.00').notNull(),

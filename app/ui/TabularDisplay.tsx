@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button, Container, Table } from '@mantine/core';
+import { Button, Container, Pill, Table } from '@mantine/core';
 import { CustomerRequestData } from '../types/customerTypes';
-import { InvoiceRequestData } from '../types/invoiceTypes';
+import { InvoiceTableData } from '../types/invoiceTypes';
 
 export function TabularDisplay({
   tableHeadings,
@@ -9,7 +9,7 @@ export function TabularDisplay({
   dataType,
 }: {
   tableHeadings: string[];
-  data: CustomerRequestData[] | InvoiceRequestData[];
+  data: CustomerRequestData[] | InvoiceTableData[];
   dataType: 'customer' | 'invoice';
 }) {
   const rowStyle: React.CSSProperties = {
@@ -26,6 +26,31 @@ export function TabularDisplay({
     border: '3px solid #ccc', // Border around the table
     borderRadius: '10px', // Rounded corners
     overflow: 'hidden', // Ensures border-radius is applied properly
+    height: '30vh',
+    overflowY: 'auto', // Enables scrolling when content exceeds max height
+  };
+
+  const statusStyle = (status: string): React.CSSProperties => {
+    switch (status) {
+      case 'Paid':
+        return {
+          backgroundColor: '#A5D6A7',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          width: '4rem',
+          display: 'inline-block', // Ensures the text is centered
+        };
+      case 'Unpaid':
+        return {
+          backgroundColor: '#FFCC80',
+          textAlign: 'center',
+          fontWeight: 'bold',
+          width: '4rem',
+          display: 'inline-block',
+        };
+      default:
+        return {};
+    }
   };
 
   const rows = data.map((entry) => {
@@ -46,16 +71,24 @@ export function TabularDisplay({
       );
     }
 
-    const invoice = entry as InvoiceRequestData;
+    const invoice = entry as InvoiceTableData;
+    const { customers, invoices } = invoice; // Destructure invoice data into customers and invoices components
+    const amountDue = (parseFloat(invoices.amount) - parseFloat(invoices.amountPaid)).toFixed(2);
     return (
-      <tr key={invoice.invoiceNumber}>
-        <td style={rowStyle}>{invoice.invoiceNumber}</td>
-        <td style={rowStyle}>{invoice.amount}</td>
-        <td style={rowStyle}>{invoice.amountPaid}</td>
-        <td style={rowStyle}>{invoice.invoiceDate}</td>
-        <td style={rowStyle}>{invoice.invoiceStatus}</td>
-        <td>
-          <Button>view</Button>
+      <tr key={invoices.invoiceId}>
+        <td style={rowStyle}>{`${customers.firstName} ${customers.lastName}`}</td>
+        <td style={rowStyle}>{customers.companyName}</td>
+        <td style={rowStyle}>{invoices.amount}</td>
+        <td style={rowStyle}>{amountDue}</td>
+        <td style={rowStyle}>{invoices.invoiceDate}</td>
+        <td style={rowStyle}>{invoices.invoiceNumber}</td>
+        <td style={rowStyle}>
+          <Pill style={statusStyle(invoices.invoiceStatus)}>{invoices.invoiceStatus}</Pill>
+        </td>
+        <td style={rowStyle}>
+          <Button component="a" href={`/invoices/${invoices.invoiceId}`}>
+            view
+          </Button>
         </td>
       </tr>
     );

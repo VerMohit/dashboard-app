@@ -1,3 +1,5 @@
+import { CustomerDetails } from "./customerTypes"
+
 // For form request data coming from fronend when submitting invoice related data
 type InvoiceRequestData = {
     invoiceNumber: string,
@@ -8,8 +10,6 @@ type InvoiceRequestData = {
     invoiceStatus: "Paid" | "Unpaid",
     isArchived: true | false
 }
-
-
 
 
 // For inserted invoice data (returned from DB after insertion)
@@ -24,6 +24,13 @@ type InsertedInvoice = {
     isArchived: true | false
 }
 
+// The invoice data retreived from the DB has 2 objects: customers and invoices
+type InvoiceTableData = {
+    customers: CustomerDetails,
+    invoices: InsertedInvoice
+}
+
+
 
 // need to specify `type` because of tsconfig.json settings having `isolatedModules` enabled
-export type {InvoiceRequestData, InsertedInvoice};
+export type {InvoiceRequestData, InsertedInvoice, InvoiceTableData};

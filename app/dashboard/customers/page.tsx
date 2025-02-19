@@ -1,8 +1,8 @@
 import { Container } from '@mantine/core';
-import { DisplayContents } from '../ui/DisplayContents';
-import { Filter } from '../ui/Filter';
-import { lusitana } from '../ui/fonts';
-import Search from '../ui/Search';
+import { CustomerFilter } from '@/app/ui/CustomerFilter';
+import { DisplayContents } from '@/app/ui/DisplayContents';
+import { lusitana } from '@/app/ui/fonts';
+import Search from '@/app/ui/Search';
 
 export default async function Page(queryParmas: {
   searchParams?: Promise<{
@@ -15,9 +15,9 @@ export default async function Page(queryParmas: {
   const query = resolvedParams?.query;
   const isActive = resolvedParams?.isActive;
 
-  if (query) {
-    params.set('query', query);
-  }
+  // if (query) {
+  params.set('query', query ?? '');
+  // }
 
   params.set('isActive', isActive ?? 'true');
 
@@ -29,8 +29,7 @@ export default async function Page(queryParmas: {
     <Container>
       <h1 className={`${lusitana.className} text-2xl`}>Customers</h1>
       <Search placeholder="Search customers..." />
-      <Filter />
-      {/* <Button onClick={fetchCustomers}>Search</Button> */}
+      <CustomerFilter />
       <DisplayContents
         queryParams={queryString}
         apiResource="customers"

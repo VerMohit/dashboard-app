@@ -16,5 +16,11 @@ type CustomerRequestData = {
     notes: string,
     isActive: boolean
   }
+
+  type CustomerDetails = {
+    firstName: string;
+    lastName: string;
+    companyName: string;
+  };
   
-  export type {CustomerRequestData};
+  export type {CustomerRequestData, CustomerDetails};
