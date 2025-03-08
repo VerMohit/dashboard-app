@@ -9,12 +9,12 @@ export function CustomerFilter() {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const [isActive, setIsActive] = useState('true');
+  const [isActive, setIsActive] = useState('all');
 
   useEffect(() => {
     const activeParam = searchParams.get('isActive');
     if (activeParam) {
-      setIsActive(activeParam);
+      setIsActive(activeParam || 'all');
     }
   }, [searchParams]);
 
@@ -33,7 +33,7 @@ export function CustomerFilter() {
 
   return (
     <Radio.Group
-      name="filter customer by activity"
+      name="filter-customer-by-active-status"
       label="Customer Status:"
       value={isActive}
       onChange={(newValue) => {
@@ -42,6 +42,7 @@ export function CustomerFilter() {
       }}
     >
       <Group mt="xs">
+        <Radio value="all" label="All" checked />
         <Radio value="true" label="Active" />
         <Radio value="false" label="Inactive" />
       </Group>

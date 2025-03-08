@@ -20,7 +20,7 @@ export async function DisplayContents({
     const response = await fetch(`${baseURL}${apiResource}${queryParams}`);
 
     if (!response.ok) {
-      throw new Error(`Couldn't retreive ${apiResource} data.`);
+      throw new Error(`Error fetching data: ${response.statusText}`);
     }
 
     const data: CustomerRequestData[] | InvoiceTableData[] = await response.json();

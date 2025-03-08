@@ -17,10 +17,25 @@ type CustomerRequestData = {
     isActive: boolean
   }
 
-  type CustomerDetails = {
-    firstName: string;
-    lastName: string;
-    companyName: string;
-  };
+type CustomerDetails = {
+  firstName: string;
+  lastName: string;
+  companyName: string;
+};
+
+// Defining the shape for the values used in the form for creating new customers
+type CustomerFormValues = {
+  firstName: string;
+  lastName: string;
+  phoneNo: string;
+  email: string;
+  companyName: string;
+  unitNo: string;
+  streetName: string;
+  city: string;
+  postalCode: string;
+  state: string;
+};
+
   
-  export type {CustomerRequestData, CustomerDetails};
+  export type {CustomerRequestData, CustomerDetails, CustomerFormValues};

@@ -30,7 +30,13 @@ type InvoiceTableData = {
     invoices: InsertedInvoice
 }
 
-
+// Defining the shape for the values used in the form for creating new invoices
+type InvoiceFormValues = {
+    invoiceNo: string,
+    amount: string,
+    amountPaid: string,
+    paidStatus: string,
+  };
 
 // need to specify `type` because of tsconfig.json settings having `isolatedModules` enabled
-export type {InvoiceRequestData, InsertedInvoice, InvoiceTableData};
+export type {InvoiceRequestData, InsertedInvoice, InvoiceTableData, InvoiceFormValues};
