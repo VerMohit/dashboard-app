@@ -10,7 +10,7 @@ export function InvoiceFilter() {
   const { replace } = useRouter();
 
   const [sortDate, setSortDate] = useState('DESC');
-  const [invoiceStatus, setInvoiceStatus] = useState('');
+  const [invoiceStatus, setInvoiceStatus] = useState('All');
 
   useEffect(() => {
     const newsortDate = searchParams.get('sortDate');
@@ -34,12 +34,6 @@ export function InvoiceFilter() {
     }
 
     params.set(`${filterType}`, newValue);
-
-    // if (filterType && newValue) {
-    //   params.set(`${filterType}`, newValue);
-    // } else {
-    //   params.delete(`${filterType}`);
-    // }
 
     replace(`${pathname}?${params.toString()}`);
   }

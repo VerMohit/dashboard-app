@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Container, Pill, Table } from '@mantine/core';
 import { CustomerRequestData } from '../types/customerTypes';
 import { InvoiceTableData } from '../types/invoiceTypes';
+import { formatCurrency, formatDate } from '../utility/formatValues';
 
 export function TabularDisplay({
   tableHeadings,
@@ -12,6 +13,7 @@ export function TabularDisplay({
   data: CustomerRequestData[] | InvoiceTableData[];
   dataType: 'customer' | 'invoice';
 }) {
+  // make into css class
   const rowStyle: React.CSSProperties = {
     textAlign: 'left',
     padding: '10px',
@@ -22,6 +24,7 @@ export function TabularDisplay({
     textOverflow: 'ellipsis', // Add ellipsis when text overflows
   };
 
+  // make into css class
   const tableStyle: React.CSSProperties = {
     border: '3px solid #ccc', // Border around the table
     borderRadius: '10px', // Rounded corners
@@ -30,6 +33,7 @@ export function TabularDisplay({
     overflowY: 'auto', // Enables scrolling when content exceeds max height
   };
 
+  // make into css class
   const statusStyle = (status: string): React.CSSProperties => {
     switch (status) {
       case 'Paid':
@@ -78,9 +82,9 @@ export function TabularDisplay({
       <tr key={invoices.invoiceId}>
         <td style={rowStyle}>{`${customers.firstName} ${customers.lastName}`}</td>
         <td style={rowStyle}>{customers.companyName}</td>
-        <td style={rowStyle}>{invoices.amount}</td>
-        <td style={rowStyle}>{amountDue}</td>
-        <td style={rowStyle}>{invoices.invoiceDate}</td>
+        <td style={rowStyle}>{formatCurrency(invoices.amount)}</td>
+        <td style={rowStyle}>{formatCurrency(amountDue)}</td>
+        <td style={rowStyle}>{formatDate(invoices.invoiceDate)}</td>
         <td style={rowStyle}>{invoices.invoiceNumber}</td>
         <td style={rowStyle}>
           <Pill style={statusStyle(invoices.invoiceStatus)}>{invoices.invoiceStatus}</Pill>

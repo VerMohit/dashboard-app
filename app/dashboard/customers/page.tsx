@@ -1,4 +1,5 @@
-import { Container } from '@mantine/core';
+import { IoPersonAddSharp } from 'react-icons/io5';
+import { Button, Container, Flex } from '@mantine/core';
 import { CustomerFilter } from '@/app/ui/CustomerFilter';
 import { DisplayContents } from '@/app/ui/DisplayContents';
 import { lusitana } from '@/app/ui/fonts';
@@ -12,14 +13,12 @@ export default async function Page(queryParmas: {
 }) {
   const params = new URLSearchParams();
   const resolvedParams = await queryParmas.searchParams;
-  const query = resolvedParams?.query;
-  const isActive = resolvedParams?.isActive;
+  const query = resolvedParams?.query ?? '';
+  const isActive = resolvedParams?.isActive ?? 'all';
 
-  // if (query) {
-  params.set('query', query ?? '');
-  // }
+  params.set('query', query);
 
-  params.set('isActive', isActive ?? 'true');
+  params.set('isActive', isActive);
 
   const queryString = params.size > 0 ? `?${params.toString()}` : '';
 
@@ -30,6 +29,12 @@ export default async function Page(queryParmas: {
       <h1 className={`${lusitana.className} text-2xl`}>Customers</h1>
       <Search placeholder="Search customers..." />
       <CustomerFilter />
+      <Button component="a" href="./customers/newCustomer" radius="50px">
+        <Flex gap="0.5rem" justify="center" align="center">
+          <IoPersonAddSharp />
+          Add Customer
+        </Flex>
+      </Button>
       <DisplayContents
         queryParams={queryString}
         apiResource="customers"

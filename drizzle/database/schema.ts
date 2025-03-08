@@ -37,12 +37,15 @@ import {
   serial,
   text,
   varchar,
+  uuid
 } from 'drizzle-orm/pg-core';
 import { InvoiceStatus } from '../lib/invoiceEnum';
+import { v4 as uuidv4 } from 'uuid';
 
 // Customer table
 export const Customer = pgTable('customers', {
   // Autoincrementing ID
+  customerUuid: uuid('customer_uuid').default(uuidv4()).primaryKey(), //added this now
   customerId: serial('customer_id').primaryKey(),
   firstName: text('first_name').notNull(),
   lastName: text('last_name').notNull(),
