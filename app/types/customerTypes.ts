@@ -38,5 +38,4 @@ type CustomerFormValues = {
   state: string;
 };
 
-  
   export type {CustomerRequestData, CustomerDetails, CustomerFormValues};
