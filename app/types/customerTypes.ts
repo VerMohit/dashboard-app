@@ -1,7 +1,6 @@
 // For form request data coming from fronend when submitting invoice related data
 
 type CustomerRequestData = {
-  customerUUID: string,
   customerId: number,
   firstName: string,
   lastName: string,
