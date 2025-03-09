@@ -40,13 +40,13 @@ import {
   uuid
 } from 'drizzle-orm/pg-core';
 import { InvoiceStatus } from '../lib/invoiceEnum';
-import { v4 as uuidv4 } from 'uuid';
+import { sql } from 'drizzle-orm';
 
 // Customer table
 export const Customer = pgTable('customers', {
-  // Autoincrementing ID
-  customerUuid: uuid('customer_uuid').default(uuidv4()).primaryKey(), //added this now
-  customerId: serial('customer_id').primaryKey(),
+  
+  customerUUID: uuid('customer_uuid').default(sql`gen_random_uuid()`).primaryKey(), 
+  customerId: serial('customer_id').unique().notNull(),                // Autoincrementing ID
   firstName: text('first_name').notNull(),
   lastName: text('last_name').notNull(),
   phoneNo: varchar('phone_number', { length: 15 }).unique().notNull(),
@@ -59,35 +59,27 @@ export const Customer = pgTable('customers', {
   state: text('state').notNull(),
   country: text('country').notNull(),
   notes: text('notes').default(''),
-  // Soft delete purposes
-  isActive: boolean('is_active').default(true),
+  isActive: boolean('is_active').default(true),   // Soft delete purposes
 });
 
 // Invoices table
 export const Invoices = pgTable('invoices', {
-  // Autoincrementing ID
-  invoiceId: serial('invoice_id').primaryKey(),
-  // Foreign key to Customer
-  customerId: integer('customer_id')
-    .references(() => Customer.customerId)
-    .notNull(),
+  invoiceUUID: uuid('invoice_uuid').default(sql`gen_random_uuid()`).primaryKey(),
+  invoiceId: serial('invoice_id').unique().notNull(),
+  customerUUID: uuid('customer_uuid').notNull().references(() => Customer.customerUUID),
   invoiceNumber: text('invoice_number').unique().notNull(),
-  // 10 digits for integer part and 2 digits for fractional part
-  amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
+  amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),   // 10 digits for integer part and 2 digits for fractional part
   amountPaid: decimal('amount_paid', { precision: 10, scale: 2 }).default('0.00').notNull(),
-  // Default to current date and time
-  invoiceDate: date('invoice_date').defaultNow().notNull(),
+  invoiceDate: date('invoice_date').defaultNow().notNull(),              // Default to current date and time
   invoiceStatus: text('invoice_status').default(InvoiceStatus.Unpaid).notNull(),
-  // Soft delete purposes
-  isArchived: boolean('is_archived').default(false).notNull(),
+  
+  isArchived: boolean('is_archived').default(false).notNull(),  // Soft delete purposes
 });
 
 // InvoiceDocuments table
 export const InvoiceDocuments = pgTable('invoice_documents', {
   documentId: serial('document_id').primaryKey(),
-  invoiceId: integer('invoice_id')
-    .references(() => Invoices.invoiceId)
-    .notNull(),
+  invoiceUUID: uuid('invoice_uuid').notNull().references(() => Invoices.invoiceUUID),
   fileName: varchar('file_name', { length: 255 }).unique().notNull(),
   filePath: text('file_path').unique().notNull(),
   fileType: varchar('file_type', { length: 50 }).notNull(),
