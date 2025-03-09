@@ -1,37 +1,9 @@
-# Mantine Next.js template
+Added UUID to help with potential future proofing.
 
-This is a template for [Next.js](https://nextjs.org/) app router + [Mantine](https://mantine.dev/).
-If you want to use pages router instead, see [next-pages-template](https://github.com/mantinedev/next-pages-template).
+Could make it such that inactive customer and associated invoices should be moved to an entirely sepearet table for inactive users or an archive table for inactive customer for over 1 year.
 
-## Features
+Using a UUID gives me stable referencing betwwen the customer and associated invoice obejcts, which makes it easier to track andove obecjts. This should also help with sql triggers that I add later on
 
-This template comes with the following features:
+I know UUIDs could slow the perfomance of the application, but the number of times  that this operation would be performed would be low..thus the applications performance wouldn't be significantly influenced in the long run.
 
-- [PostCSS](https://postcss.org/) with [mantine-postcss-preset](https://mantine.dev/styles/postcss-preset)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Storybook](https://storybook.js.org/)
-- [Jest](https://jestjs.io/) setup with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro)
-- ESLint setup with [eslint-config-mantine](https://github.com/mantinedev/eslint-config-mantine)
-
-## npm scripts
-
-### Build and dev scripts
-
-- `dev` – start dev server
-- `build` – bundle application for production
-- `analyze` – analyzes application bundle with [@next/bundle-analyzer](https://www.npmjs.com/package/@next/bundle-analyzer)
-
-### Testing scripts
-
-- `typecheck` – checks TypeScript types
-- `lint` – runs ESLint
-- `prettier:check` – checks files with Prettier
-- `jest` – runs jest tests
-- `jest:watch` – starts jest watch
-- `test` – runs `jest`, `prettier:check`, `lint` and `typecheck` scripts
-
-### Other scripts
-
-- `storybook` – starts storybook dev server
-- `storybook:build` – build production storybook bundle to `storybook-static`
-- `prettier:write` – formats all files with Prettier
+Possible alternatives could be use a List Partition, which is a variation of the vertical partition, and have an active and inactive partition. Might cause slight overhead but queries get optimized since there's less rows to process over!
