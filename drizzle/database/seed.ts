@@ -11,7 +11,7 @@
     Then run,
 
     ```
-      yarn seed
+      yarn seed-db
     ```
 
     The way I currently sseded the data was converting this file into a .cjs file, change "type":"commonjs" 
@@ -40,11 +40,11 @@ async function seedDB() {
           companyName: 'Doe Enterprises',
           unitNo: '101',
           street: '123 Main St',
-          city: 'New York',
-          postalCode: '10001',
-          state: 'NY',
-          country: 'USA',
-          phoneNo: '+1 123 456 7890',
+          city: 'Toronto',
+          postalCode: 'M5H 2N2',
+          state: 'ON',
+          country: 'Canada',
+          phoneNo: '+14164567890',
           isActive: true, // Explicitly setting active status
         },
         {
@@ -54,11 +54,11 @@ async function seedDB() {
           companyName: 'Smith Solutions',
           unitNo: '202A',
           street: '456 Elm St',
-          city: 'San Francisco',
-          postalCode: '94016',
-          state: 'CA',
-          country: 'USA',
-          phoneNo: '+1 987 654 3210',
+          city: 'Vancouver',
+          postalCode: 'V6B 4N8',
+          state: 'BC',
+          country: 'Canada',
+          phoneNo: '+16046543210',
           isActive: true,
         },
         {
@@ -67,22 +67,22 @@ async function seedDB() {
           email: 'alice.johnson@example.com',
           companyName: 'Alice Corp',
           street: '789 Oak St',
-          city: 'Los Angeles',
-          postalCode: '90001',
-          state: 'CA',
-          country: 'USA',
-          phoneNo: '+1 555 123 4567',
+          city: 'Montreal',
+          postalCode: 'H3B 1A7',
+          state: 'QC',
+          country: 'Canada',
+          phoneNo: '+15141234567',
           isActive: false,
         },
       ])
-      .returning({ customerId: Customer.customerId });
+      .returning({ customerUUID: Customer.customerUUID });
 
-    const customerIds = insertedCustomer.map((customer) => customer.customerId);
+    const customerUUIDs = insertedCustomer.map((customer) => customer.customerUUID);
 
     // Create fake invoices with all required fields
     const invoices = await db.insert(Invoices).values([
       {
-        customerId: customerIds[0],
+        customerUUID: customerUUIDs[0],
         invoiceNumber: 'INV-001',
         amount: '150.00',
         amountPaid: '0.00',
@@ -91,27 +91,45 @@ async function seedDB() {
         invoiceDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD
       },
       {
-        customerId: customerIds[1],
+        customerUUID: customerUUIDs[0],
         invoiceNumber: 'INV-002',
+        amount: '150.00',
+        amountPaid: '150.00',
+        invoiceStatus: InvoiceStatus.Paid,
+
+        invoiceDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+      },
+      {
+        customerUUID: customerUUIDs[1],
+        invoiceNumber: 'INV-003',
         amount: '200.00',
         amountPaid: '200.00',
         invoiceStatus: InvoiceStatus.Paid,
         invoiceDate: new Date().toISOString().split('T')[0],
       },
       {
-        customerId: customerIds[1],
-        invoiceNumber: 'INV-003',
+        customerUUID: customerUUIDs[1],
+        invoiceNumber: 'INV-004',
         amount: '250.00',
         amountPaid: '0.00',
         invoiceStatus: InvoiceStatus.Unpaid,
         invoiceDate: new Date().toISOString().split('T')[0],
       },
       {
-        customerId: customerIds[2],
-        invoiceNumber: 'INV-004',
+        customerUUID: customerUUIDs[2],
+        invoiceNumber: 'INV-005',
         amount: '300.00',
         amountPaid: '0.00',
         invoiceStatus: InvoiceStatus.Unpaid,
+        invoiceDate: new Date().toISOString().split('T')[0],
+        isArchived: true,
+      },
+      {
+        customerUUID: customerUUIDs[2],
+        invoiceNumber: 'INV-006',
+        amount: '100.00',
+        amountPaid: '100.00',
+        invoiceStatus: InvoiceStatus.Paid,
         invoiceDate: new Date().toISOString().split('T')[0],
         isArchived: true,
       },
