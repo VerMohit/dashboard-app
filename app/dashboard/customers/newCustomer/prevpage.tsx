@@ -1,3 +1,5 @@
+//DELTE ONCE THE page.tsx works!!!
+
 'use client';
 
 import { toast, ToastContainer } from 'react-toastify';
@@ -29,15 +31,15 @@ export default function Page() {
     },
 
     validate: {
-      firstName: isNotEmpty('First name is required'), //hasLength({ min: 2 }, 'First name must be at least 2 characters long'),
-      lastName: isNotEmpty('Last name is required'), // hasLength({ min: 2 }, 'Last name must be at least 2 characters long'),
-      phoneNo: isNotEmpty('Phone number is required'),
+      firstName: hasLength({ min: 2 }, 'First name must be at least 2 characters long'),
+      lastName: hasLength({ min: 2 }, 'Last name must be at least 2 characters long'),
+      phoneNo: isNotEmpty('Phone number is missing'), //matches(/^\(\d{3}\)-\d{3}-\d{4}$/, 'Enter valid phone number'),
       email: isEmail('Invalid email'),
       companyName: hasLength({ min: 2 }, 'Company name must be at least 2 characters long'),
-      streetName: isNotEmpty('Street name required'),
-      city: isNotEmpty('City required'),
+      streetName: isNotEmpty('Street name missing'),
+      city: isNotEmpty('City missing'),
       postalCode: matches(/^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/, 'Enter valid zip/postal code'),
-      country: isNotEmpty('Country is required'),
+      country: isNotEmpty('Country is missing'),
       state: isNotEmpty('Select a state/province'),
     },
   });
@@ -49,46 +51,46 @@ export default function Page() {
       invoiceDate: '',
       amount: '',
       amountPaid: '',
+      paidStatus: '',
     },
 
     validate: {
-      invoiceNo: isNotEmpty('Invoice number is required'),
+      invoiceNo: isNotEmpty('Invoice number is empty'),
       invoiceDate: validateDateFormat,
       amount: validateAmountFormat,
       amountPaid: validateAmountFormat,
+      paidStatus: isNotEmpty('Select an invoice status'),
     },
   });
 
   const submutDataDB = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevents the default form submission behavior
 
-    // Validate the input fields against the validate field
-    const isCustomerValid = customerForm.validate();
-    const isInvoiceValid = invoiceForm.validate();
+    const baseURL = getBaseUrlClientSide();
 
-    if (!isCustomerValid.hasErrors && !isInvoiceValid.hasErrors) {
-      const baseURL = getBaseUrlClientSide();
+    const postCustResp = await fetch(`${baseURL}customers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        customer: customerForm.getValues(),
+        invoice: invoiceForm.getValues(),
+      }),
+    });
 
-      const response = await fetch(`${baseURL}customers`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          customer: customerForm.getValues(),
-          invoice: invoiceForm.getValues(),
-        }),
-      });
-
-      if (!response.ok) {
-        console.log(`Couldn't complete request: ${response.statusText}`);
-        const errorData = await response.json();
-        toast.error(`Error: ${errorData.message || response.statusText}`);
+    if (!postCustResp.ok) {
+      console.log(`Couldn't complete request: ${postCustResp.statusText}`);
+      const errorData = await postCustResp.json();
+      if (postCustResp.status === 409) {
+        toast.error(errorData.message);
       } else {
-        toast.success('Customer (and invoices) successfully saved!');
-        customerForm.reset();
-        invoiceForm.reset();
+        toast.error(`Error: ${errorData.message || postCustResp.statusText}`);
       }
+    } else {
+      toast.success('Customer (and invoices) successfully saved!');
+      // customerForm.reset();
+      // invoiceForm.reset();
     }
   };
 

@@ -1,6 +1,5 @@
 'use client';
 
-import { Select } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import { InvoiceFormValues } from '@/app/types/invoiceTypes';
 import FormInputField from '@/app/ui/FormUI/FormInputField';
@@ -11,30 +10,6 @@ export default function InvoiceForm({
 }: {
   invoiceForm: UseFormReturnType<InvoiceFormValues>;
 }) {
-  // const validateAmountFormat = (value: string) => {
-  //   const isValidFormat = value.match(/^\d+(\.\d{0,2})?$/);
-  //   const isPositive = parseFloat(value) >= 0;
-
-  //   return isValidFormat && isPositive ? null : 'Invalid amount format';
-  // };
-
-  // const invoiceForm = useForm({
-  //   mode: 'uncontrolled',
-  //   initialValues: {
-  //     invoiceNo: '',
-  //     amount: '',
-  //     amountPaid: '',
-  //     paidStatus: '',
-  //   },
-
-  //   validate: {
-  //     invoiceNo: isNotEmpty('Invoice number must be at least 2 characters long'),
-  //     amount: validateAmountFormat,
-  //     amountPaid: validateAmountFormat,
-  //     paidStatus: isNotEmpty('Select an invoice status'),
-  //   },
-  // });
-
   return (
     <>
       <FormInputField
@@ -43,6 +18,12 @@ export default function InvoiceForm({
         formVar="invoiceNo"
         form={invoiceForm}
         description="ex. INV-001"
+      />
+      <FormInputField
+        labelName="Issue Date"
+        formVar="invoiceDate"
+        form={invoiceForm}
+        description="ex. YYYY-MM-DD"
       />
       <FormInputField
         labelName="Amount"
@@ -58,19 +39,6 @@ export default function InvoiceForm({
         formatFunc={validateAndFormatAmount}
         form={invoiceForm}
       />
-      <Select
-        label="Paid Status"
-        placeholder="Pick current status of invoice"
-        data={['Paid', 'Unpaid']}
-        {...invoiceForm.getInputProps('paidStatus')}
-        mt="md"
-        allowDeselect
-        clearable
-      />
-
-      {/* <Group justify="flex-end" mt="md">
-        <Button type="submit">Submit</Button>
-      </Group> */}
     </>
   );
 }

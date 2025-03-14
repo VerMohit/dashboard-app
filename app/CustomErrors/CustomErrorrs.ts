@@ -50,4 +50,4 @@ class NotFoundError extends AppError {
 }
 
 
-export {AppError, ValidationError, ConflictError, NotFoundError, DatabaseError};
+export {AppError, ValidationError, ConflictError, NotFoundError, DatabaseError, };

@@ -1,5 +1,5 @@
 {
-  "id": "b5fe47b1-0a68-4747-afbe-c0ba2ddbfd49",
+  "id": "78e216a4-3ed6-4faa-9ba4-5ce338962363",
   "prevId": "4a5c1913-36bf-4c0c-b0ab-b56e987a3871",
   "version": "7",
   "dialect": "postgresql",
@@ -8,18 +8,18 @@
       "name": "customers",
       "schema": "",
       "columns": {
-        "customer_uuid": {
-          "name": "customer_uuid",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
         "customer_id": {
           "name": "customer_id",
           "type": "serial",
-          "primaryKey": false,
+          "primaryKey": true,
           "notNull": true
+        },
+        "customer_uuid": {
+          "name": "customer_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "first_name": {
           "name": "first_name",
@@ -107,11 +107,11 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "customers_customer_id_unique": {
-          "name": "customers_customer_id_unique",
+        "customers_customer_uuid_unique": {
+          "name": "customers_customer_uuid_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "customer_id"
+            "customer_uuid"
           ]
         },
         "customers_phone_number_unique": {
@@ -229,22 +229,28 @@
       "name": "invoices",
       "schema": "",
       "columns": {
-        "invoice_uuid": {
-          "name": "invoice_uuid",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
         "invoice_id": {
           "name": "invoice_id",
           "type": "serial",
-          "primaryKey": false,
+          "primaryKey": true,
           "notNull": true
+        },
+        "invoice_uuid": {
+          "name": "invoice_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "customer_uuid": {
           "name": "customer_uuid",
           "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "customer_id": {
+          "name": "customer_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -303,15 +309,28 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "invoices_customer_id_customers_customer_id_fk": {
+          "name": "invoices_customer_id_customers_customer_id_fk",
+          "tableFrom": "invoices",
+          "tableTo": "customers",
+          "columnsFrom": [
+            "customer_id"
+          ],
+          "columnsTo": [
+            "customer_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "invoices_invoice_id_unique": {
-          "name": "invoices_invoice_id_unique",
+        "invoices_invoice_uuid_unique": {
+          "name": "invoices_invoice_uuid_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "invoice_id"
+            "invoice_uuid"
           ]
         },
         "invoices_invoice_number_unique": {

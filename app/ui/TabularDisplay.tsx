@@ -76,11 +76,19 @@ export function TabularDisplay({
     }
 
     const invoice = entry as InvoiceTableData;
+
+    // Skip if a customer's invoice is null - don't display in table
+    if (!invoice.invoices) {
+      return null;
+    }
+
     const { customers, invoices } = invoice; // Destructure invoice data into customers and invoices components
     const amountDue = (parseFloat(invoices.amount) - parseFloat(invoices.amountPaid)).toFixed(2);
     return (
       <tr key={invoices.invoiceId}>
-        <td style={rowStyle}>{`${customers.firstName} ${customers.lastName}`}</td>
+        <td style={rowStyle}>
+          {customers.firstName} {customers.lastName}
+        </td>
         <td style={rowStyle}>{customers.companyName}</td>
         <td style={rowStyle}>{formatCurrency(invoices.amount)}</td>
         <td style={rowStyle}>{formatCurrency(amountDue)}</td>

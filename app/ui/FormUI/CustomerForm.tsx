@@ -89,8 +89,15 @@ export default function CustomerForm({
         form={custForm}
         description="ex: A1A 2B2"
       />
+      <FormInputField
+        labelName="Country"
+        formVar="country"
+        formatFunc={formatCapitalizeString}
+        form={custForm}
+      />
       <Select
         label="Province"
+        withAsterisk
         placeholder="Pick province"
         data={provincesAndTerritories}
         {...custForm.getInputProps('state')}
@@ -101,10 +108,12 @@ export default function CustomerForm({
         allowDeselect
         clearable
       />
-
-      {/* <Group justify="flex-end" mt="md">
-        <Button type="submit">Submit</Button>
-      </Group> */}
+      <FormInputField
+        labelName="Notes"
+        formVar="notes"
+        formatFunc={formatCapitalizeString}
+        form={custForm}
+      />
     </>
   );
 }

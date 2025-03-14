@@ -62,24 +62,30 @@ const validateAndFormatPhone = (phoneNo : string) => {
     return {formattedValue: null, err: 'Invalid phone number'};
   }
 
-  let formattedPhoneNo = '';
-  if(cleanedPhoneNo.length === 10) {
-    const areaCode = cleanedPhoneNo.slice(0, 3);
-    const exchange = cleanedPhoneNo.slice(3, 6);
-    const extension = cleanedPhoneNo.slice(6);
-  
-    formattedPhoneNo = `+1 (${areaCode}) ${exchange}-${extension}`;
-  }
-  else {
-    const countryCode = cleanedPhoneNo[0];
-    const areaCode = cleanedPhoneNo.slice(1, 4);
-    const exchange = cleanedPhoneNo.slice(4, 7);
-    const extension = cleanedPhoneNo.slice(7);
-  
-    formattedPhoneNo = `+${countryCode} (${areaCode}) ${exchange}-${extension}`;
-  }
+  return cleanedPhoneNo.length === 10 ? 
+    {formattedValue: `+1${cleanedPhoneNo}`, err: null}  
+    : {formattedValue: `+${cleanedPhoneNo}`, err: null} ;
 
-  return {formattedValue: formattedPhoneNo, err: null} 
+  // let formattedPhoneNo = '';
+  // if(cleanedPhoneNo.length === 10) {
+  //   // const areaCode = cleanedPhoneNo.slice(0, 3);
+  //   // const exchange = cleanedPhoneNo.slice(3, 6);
+  //   // const extension = cleanedPhoneNo.slice(6);
+  
+  //   // formattedPhoneNo = `+1 (${areaCode}) ${exchange}-${extension}`;
+  //   formattedPhoneNo = `+1${cleanedPhoneNo}`;
+  // }
+  // else {
+  //   // const countryCode = cleanedPhoneNo[0];
+  //   // const areaCode = cleanedPhoneNo.slice(1, 4);
+  //   // const exchange = cleanedPhoneNo.slice(4, 7);
+  //   // const extension = cleanedPhoneNo.slice(7);
+  
+  //   // formattedPhoneNo = `+${countryCode} (${areaCode}) ${exchange}-${extension}`;
+  //   formattedPhoneNo = `+${cleanedPhoneNo}`;
+  // }
+
+  // return {formattedValue: formattedPhoneNo, err: null} 
 
 }
 
