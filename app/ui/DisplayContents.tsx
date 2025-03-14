@@ -1,6 +1,6 @@
 import { CustomerRequestData } from '../types/customerTypes';
 import { InvoiceTableData } from '../types/invoiceTypes';
-import { getBaseUrl } from '../utility/getBaseUrl';
+import { getBaseUrlServerSide } from '../utility/getBaseUrlServerSide';
 import { TabularDisplay } from './TabularDisplay';
 
 export async function DisplayContents({
@@ -15,7 +15,7 @@ export async function DisplayContents({
   dataType: 'customer' | 'invoice';
 }) {
   try {
-    const baseURL = await getBaseUrl();
+    const baseURL = await getBaseUrlServerSide();
 
     const response = await fetch(`${baseURL}${apiResource}${queryParams}`);
 
@@ -24,6 +24,8 @@ export async function DisplayContents({
     }
 
     const data: CustomerRequestData[] | InvoiceTableData[] = await response.json();
+
+    // console.log(data);
 
     return <TabularDisplay tableHeadings={displayHeadings} data={data} dataType={dataType} />;
 

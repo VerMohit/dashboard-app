@@ -36,6 +36,8 @@ type CustomerFormValues = {
   city: string;
   postalCode: string;
   state: string;
+  country: string;
+  notes: string;
 };
 
   export type {CustomerRequestData, CustomerDetails, CustomerFormValues};

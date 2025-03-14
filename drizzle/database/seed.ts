@@ -75,13 +75,15 @@ async function seedDB() {
           isActive: false,
         },
       ])
-      .returning({ customerUUID: Customer.customerUUID });
+      .returning({ customerId: Customer.customerId, customerUUID: Customer.customerUUID });
 
+    const customerIds = insertedCustomer.map((customer) => customer.customerId);
     const customerUUIDs = insertedCustomer.map((customer) => customer.customerUUID);
 
     // Create fake invoices with all required fields
     const invoices = await db.insert(Invoices).values([
       {
+        customerId: customerIds[0],
         customerUUID: customerUUIDs[0],
         invoiceNumber: 'INV-001',
         amount: '150.00',
@@ -91,33 +93,27 @@ async function seedDB() {
         invoiceDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD
       },
       {
-        customerUUID: customerUUIDs[0],
-        invoiceNumber: 'INV-002',
-        amount: '150.00',
-        amountPaid: '150.00',
-        invoiceStatus: InvoiceStatus.Paid,
-
-        invoiceDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-      },
-      {
+        customerId: customerIds[1],
         customerUUID: customerUUIDs[1],
-        invoiceNumber: 'INV-003',
+        invoiceNumber: 'INV-002',
         amount: '200.00',
         amountPaid: '200.00',
         invoiceStatus: InvoiceStatus.Paid,
         invoiceDate: new Date().toISOString().split('T')[0],
       },
       {
+        customerId: customerIds[1],
         customerUUID: customerUUIDs[1],
-        invoiceNumber: 'INV-004',
+        invoiceNumber: 'INV-003',
         amount: '250.00',
         amountPaid: '0.00',
         invoiceStatus: InvoiceStatus.Unpaid,
         invoiceDate: new Date().toISOString().split('T')[0],
       },
       {
+        customerId: customerIds[2],
         customerUUID: customerUUIDs[2],
-        invoiceNumber: 'INV-005',
+        invoiceNumber: 'INV-004',
         amount: '300.00',
         amountPaid: '0.00',
         invoiceStatus: InvoiceStatus.Unpaid,
@@ -125,8 +121,9 @@ async function seedDB() {
         isArchived: true,
       },
       {
+        customerId: customerIds[2],
         customerUUID: customerUUIDs[2],
-        invoiceNumber: 'INV-006',
+        invoiceNumber: 'INV-005',
         amount: '100.00',
         amountPaid: '100.00',
         invoiceStatus: InvoiceStatus.Paid,

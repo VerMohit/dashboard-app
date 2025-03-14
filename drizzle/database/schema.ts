@@ -44,45 +44,95 @@ import { sql } from 'drizzle-orm';
 
 // Customer table
 export const Customer = pgTable('customers', {
-  
-  customerUUID: uuid('customer_uuid').default(sql`gen_random_uuid()`).primaryKey(), 
-  customerId: serial('customer_id').unique().notNull(),                // Autoincrementing ID
-  firstName: text('first_name').notNull(),
-  lastName: text('last_name').notNull(),
-  phoneNo: varchar('phone_number', { length: 15 }).unique().notNull(),
-  email: varchar('email', { length: 255 }).unique().notNull(),
-  companyName: varchar('company_name', { length: 355 }).unique().notNull(),
-  unitNo: varchar('unit_no', { length: 7 }).default(''),
-  street: text('street').notNull(),
-  city: text('city').notNull(),
-  postalCode: text('postal_code').notNull(),
-  state: text('state').notNull(),
-  country: text('country').notNull(),
-  notes: text('notes').default(''),
-  isActive: boolean('is_active').default(true),   // Soft delete purposes
+  customerId: serial('customer_id')
+    .notNull()
+    .primaryKey(),                // Autoincrementing ID
+  customerUUID: uuid('customer_uuid')
+    .unique()
+    .notNull()
+    .default(sql`gen_random_uuid()`), 
+  firstName: text('first_name')
+    .notNull(),
+  lastName: text('last_name')
+    .notNull(),
+  phoneNo: varchar('phone_number', { length: 15 })
+    .unique()
+    .notNull(),
+  email: varchar('email', { length: 255 })
+    .unique()
+    .notNull(),
+  companyName: varchar('company_name', { length: 355 })
+    .unique()
+    .notNull(),
+  unitNo: varchar('unit_no', { length: 7 })
+    .default(''),
+  street: text('street')
+    .notNull(),
+  city: text('city')
+    .notNull(),
+  postalCode: text('postal_code')
+    .notNull(),
+  state: text('state')
+    .notNull(),
+  country: text('country')
+    .notNull(),
+  notes: text('notes')
+    .default(''),
+  isActive: boolean('is_active')
+    .default(true),   // Soft delete purposes
 });
 
 // Invoices table
 export const Invoices = pgTable('invoices', {
-  invoiceUUID: uuid('invoice_uuid').default(sql`gen_random_uuid()`).primaryKey(),
-  invoiceId: serial('invoice_id').unique().notNull(),
-  customerUUID: uuid('customer_uuid').notNull().references(() => Customer.customerUUID),
-  invoiceNumber: text('invoice_number').unique().notNull(),
-  amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),   // 10 digits for integer part and 2 digits for fractional part
-  amountPaid: decimal('amount_paid', { precision: 10, scale: 2 }).default('0.00').notNull(),
-  invoiceDate: date('invoice_date').defaultNow().notNull(),              // Default to current date and time
-  invoiceStatus: text('invoice_status').default(InvoiceStatus.Unpaid).notNull(),
+  invoiceId: serial('invoice_id')
+    .notNull()
+    .primaryKey(),
+  invoiceUUID: uuid('invoice_uuid')
+    .unique()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
+  customerUUID: uuid('customer_uuid')
+    .notNull()
+    .references(() => Customer.customerUUID),
+  customerId: integer('customer_id')
+    .references(() => Customer.customerId)
+    .notNull(),
+  invoiceNumber: text('invoice_number')
+    .unique()
+    .notNull(),
+  amount: decimal('amount', { precision: 10, scale: 2 })
+    .notNull(),   // 10 digits for integer part and 2 digits for fractional part
+  amountPaid: decimal('amount_paid', { precision: 10, scale: 2 })
+    .default('0.00')
+    .notNull(),
+  invoiceDate: date('invoice_date')
+    .defaultNow()
+    .notNull(),              // Default to current date and time
+  invoiceStatus: text('invoice_status')
+    .default(InvoiceStatus.Unpaid)
+    .notNull(),
   
   isArchived: boolean('is_archived').default(false).notNull(),  // Soft delete purposes
 });
 
 // InvoiceDocuments table
 export const InvoiceDocuments = pgTable('invoice_documents', {
-  documentId: serial('document_id').primaryKey(),
-  invoiceUUID: uuid('invoice_uuid').notNull().references(() => Invoices.invoiceUUID),
-  fileName: varchar('file_name', { length: 255 }).unique().notNull(),
-  filePath: text('file_path').unique().notNull(),
-  fileType: varchar('file_type', { length: 50 }).notNull(),
-  uploadDate: date('upload_date').defaultNow().notNull(),
-  fileSize: integer('file_size').notNull(),
+  documentId: serial('document_id')
+    .primaryKey(),
+  invoiceUUID: uuid('invoice_uuid')
+    .notNull()
+    .references(() => Invoices.invoiceUUID),
+  fileName: varchar('file_name', { length: 255 })
+    .unique()
+    .notNull(),
+  filePath: text('file_path')
+    .unique()
+    .notNull(),
+  fileType: varchar('file_type', { length: 50 })
+    .notNull(),
+  uploadDate: date('upload_date')
+    .defaultNow()
+    .notNull(),
+  fileSize: integer('file_size')
+    .notNull(),
 });
