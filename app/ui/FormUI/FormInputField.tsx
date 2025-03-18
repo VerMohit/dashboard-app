@@ -17,6 +17,7 @@ type InputProps<T> = {
         err: string;
       };
   form: UseFormReturnType<T>; // Using generic type <T> gives us flexibilty to pass any shape of useForm (making this compnent general purpose)
+  requiredProp?: boolean;
 };
 
 export default function FormInputField<T>({
@@ -26,6 +27,7 @@ export default function FormInputField<T>({
   description,
   formatFunc,
   form,
+  requiredProp = true,
 }: InputProps<T>) {
   const inputProps = form.getInputProps(formVar);
 
@@ -50,7 +52,7 @@ export default function FormInputField<T>({
         label={labelName}
         placeholder={placeHolder}
         mt="md"
-        withAsterisk
+        withAsterisk={requiredProp}
         defaultValue={form.getValues()[formVar as keyof T] as string}
         key={form.key(formVar)}
         {...inputProps}

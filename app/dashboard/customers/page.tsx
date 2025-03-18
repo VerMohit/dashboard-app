@@ -1,9 +1,11 @@
 import { IoPersonAddSharp } from 'react-icons/io5';
 import { Button, Container, Flex } from '@mantine/core';
+import CustomButton from '@/app/ui/CustomButton';
 import { CustomerFilter } from '@/app/ui/CustomerFilter';
-import { DisplayContents } from '@/app/ui/DisplayContents';
 import { lusitana } from '@/app/ui/fonts';
+import FilterOptions from '@/app/ui/FormUI/FilterOptions';
 import Search from '@/app/ui/Search';
+import { DisplayContents } from '@/app/ui/TabularDisplay/DisplayContents';
 
 export default async function Page(queryParmas: {
   searchParams?: Promise<{
@@ -28,13 +30,13 @@ export default async function Page(queryParmas: {
     <Container>
       <h1 className={`${lusitana.className} text-2xl`}>Customers</h1>
       <Search placeholder="Search customers..." />
-      <CustomerFilter />
-      <Button component="a" href="./customers/newCustomer" radius="50px">
-        <Flex gap="0.5rem" justify="center" align="center">
-          <IoPersonAddSharp />
-          Add Customer
-        </Flex>
-      </Button>
+      <br />
+      <FilterOptions whichCategory="customer" />
+      <CustomButton
+        link="./customers/newCustomer"
+        label="Add Customer"
+        icon={<IoPersonAddSharp />}
+      />
       <DisplayContents
         queryParams={queryString}
         apiResource="customers"

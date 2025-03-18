@@ -8,7 +8,7 @@ type CustomerRequestData = {
   phoneNo: string,
   email: string,    
   companyName: string,
-  unitNo: number,
+  unitNo: string,
   street: string,
   city: string
   postalCode: string,
@@ -32,12 +32,12 @@ type CustomerFormValues = {
   email: string;
   companyName: string;
   unitNo: string;
-  streetName: string;
-  city: string;
-  postalCode: string;
-  state: string;
-  country: string;
-  notes: string;
+  streetName?: string;
+  city?: string;
+  postalCode?: string;
+  state?: string;
+  country?: string;
+  notes?: string;
 };
 
   export type {CustomerRequestData, CustomerDetails, CustomerFormValues};

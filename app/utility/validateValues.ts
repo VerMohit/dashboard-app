@@ -2,10 +2,13 @@ import { InvoiceStatus } from "@/drizzle/lib/invoiceEnum";
 import { ValidationError } from "../CustomErrors/CustomErrorrs";
 
 const validateAmountFormat = (amountString: string) => {
-    const isValidFormat = amountString.match(/^\d+(\.\d{0,2})?$/);
-    const isPositive = parseFloat(amountString) >= 0;
-    return isValidFormat && isPositive ? null : 'Invalid amount format';
-  };
+  // if(amountString === "") {
+  //   return null
+  // }
+  const isValidFormat = amountString.match(/^\d+(\.\d{0,2})?$/);
+  const isPositive = parseFloat(amountString) >= 0;
+  return isValidFormat && isPositive ? null : 'Invalid amount format';
+};
 
 const validateDateFormat = (dateString: string) => {
   if (dateString !== '') {

@@ -1,9 +1,10 @@
 import { AiFillFileAdd } from 'react-icons/ai';
 import { Button, Container, Flex } from '@mantine/core';
-import { DisplayContents } from '@/app/ui/DisplayContents';
+import CustomButton from '@/app/ui/CustomButton';
 import { lusitana } from '@/app/ui/fonts';
-import { InvoiceFilter } from '@/app/ui/InvoiceFilter';
+import FilterOptions from '@/app/ui/FormUI/FilterOptions';
 import Search from '@/app/ui/Search';
+import { DisplayContents } from '@/app/ui/TabularDisplay/DisplayContents';
 
 export default async function Page(queryParmas: {
   searchParams?: Promise<{
@@ -25,12 +26,12 @@ export default async function Page(queryParmas: {
   const queryString = params.size > 0 ? `?${params.toString()}` : '';
 
   const displayHeadings = [
+    'Invoice #',
     'Name',
     'Restauarnt',
     'Amount',
     'Balance',
     'Date',
-    'Invoice #',
     '',
     // 'Status',
   ];
@@ -39,13 +40,10 @@ export default async function Page(queryParmas: {
     <Container>
       <h1 className={`${lusitana.className} text-2xl`}>Invoices</h1>
       <Search placeholder="Search invoices..." />
-      <InvoiceFilter />
-      <Button component="a" href="./invoices/newInvoice" radius="50px">
-        <Flex gap="0.5rem" justify="center" align="center">
-          <AiFillFileAdd />
-          Add Invoice
-        </Flex>
-      </Button>
+      <br />
+      {/* <InvoiceFilter /> */}
+      <FilterOptions whichCategory="invoice" />
+      <CustomButton link="./invoices/newInvoice" label="Add Invoice" icon={<AiFillFileAdd />} />
       <DisplayContents
         queryParams={queryString}
         apiResource="invoices"

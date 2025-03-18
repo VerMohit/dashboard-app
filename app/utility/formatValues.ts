@@ -1,3 +1,4 @@
+
 const formatDate = (dateString: string) => {
     const date = new Date(dateString.trim());
     const day = String(date.getDate()).padStart(2, '0');
@@ -65,28 +66,6 @@ const validateAndFormatPhone = (phoneNo : string) => {
   return cleanedPhoneNo.length === 10 ? 
     {formattedValue: `+1${cleanedPhoneNo}`, err: null}  
     : {formattedValue: `+${cleanedPhoneNo}`, err: null} ;
-
-  // let formattedPhoneNo = '';
-  // if(cleanedPhoneNo.length === 10) {
-  //   // const areaCode = cleanedPhoneNo.slice(0, 3);
-  //   // const exchange = cleanedPhoneNo.slice(3, 6);
-  //   // const extension = cleanedPhoneNo.slice(6);
-  
-  //   // formattedPhoneNo = `+1 (${areaCode}) ${exchange}-${extension}`;
-  //   formattedPhoneNo = `+1${cleanedPhoneNo}`;
-  // }
-  // else {
-  //   // const countryCode = cleanedPhoneNo[0];
-  //   // const areaCode = cleanedPhoneNo.slice(1, 4);
-  //   // const exchange = cleanedPhoneNo.slice(4, 7);
-  //   // const extension = cleanedPhoneNo.slice(7);
-  
-  //   // formattedPhoneNo = `+${countryCode} (${areaCode}) ${exchange}-${extension}`;
-  //   formattedPhoneNo = `+${cleanedPhoneNo}`;
-  // }
-
-  // return {formattedValue: formattedPhoneNo, err: null} 
-
 }
 
 const formatCapitalizeString = (str: string) => {
@@ -99,4 +78,31 @@ const formatCapitalizeString = (str: string) => {
   return {formattedValue: capitalizedStr, err: null} 
 }
 
-export {formatDate, formatCurrency, validateAndFormatAmount, validateAndFormatZip, validateAndFormatPhone, formatCapitalizeString}
+
+const formatPhoneNo = (phone: string) => {
+  const countryCode = phone.slice(0, 2);
+  const areaCode = phone.slice(2, 5);
+  const exchange = phone.slice(5, 8);
+  const extension = phone.slice(8);
+  return `${countryCode} (${areaCode})-${exchange}-${extension}`;
+};
+
+const formatAddress = (
+  arr: string[]
+): string => {
+  const [street, city, state, postalCode] = arr
+  return `${street}, ${city}, ${state} ${postalCode}`;
+};
+
+
+
+export {
+  formatDate, 
+  formatCurrency, 
+  validateAndFormatAmount, 
+  validateAndFormatZip, 
+  validateAndFormatPhone, 
+  formatCapitalizeString, 
+  formatPhoneNo,
+  formatAddress
+}

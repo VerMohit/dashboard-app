@@ -45,7 +45,8 @@ export async function GET(req: Request) {
         const customers = await db.transaction(async (tsx) => {
             const result = await tsx.select()
                                    .from(Customer)
-                                   .where(and(...conditions));
+                                   .where(and(...conditions))
+                                   .orderBy(Customer.firstName);
             return result;
         });
 
@@ -159,4 +160,5 @@ export async function POST(req: Request) {
         );
     }
 }
+
 
