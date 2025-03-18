@@ -18,12 +18,12 @@
 }
 
 .tableHeading {
-  text-align: left;
+  text-align: center;
   padding: 10px;
   border-bottom: 3px solid #ddd;
 }
 
-.statusPaid {
+.statusPaid, .statusActive {
   background-color: #a5d6a7;
   text-align: center;
   font-weight: bold;
@@ -31,7 +31,7 @@
   display: inline-block;
 }
 
-.statusUnpaid {
+.statusUnpaid, .statusInActive {
   background-color: #ffcc80;
   text-align: center;
   font-weight: bold;

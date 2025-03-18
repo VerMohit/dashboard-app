@@ -24,7 +24,7 @@ export default async function Page(queryParmas: {
 
   const queryString = params.size > 0 ? `?${params.toString()}` : '';
 
-  const displayHeadings = ['Name', 'Restauarnt', 'Phone Number', 'Email'];
+  const displayHeadings = ['Name', 'Restauarnt', 'Phone Number', 'Email', ''];
 
   return (
     <Container>
