@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, Container, Pill, Table } from '@mantine/core';
 import { CustomerRequestData } from '../../types/customerTypes';
 import { InvoiceTableData } from '../../types/invoiceTypes';
@@ -67,6 +66,13 @@ export function TabularDisplay({
           <td className={styles.tableRow}>{customer.companyName}</td>
           <td className={styles.tableRow}>{customer.phoneNo}</td>
           <td className={styles.tableRow}>{customer.email}</td>
+          <td className={styles.tableRow}>
+            <Pill
+              className={customer.isActive === true ? styles.statusActive : styles.statusInActive}
+            >
+              {customer.isActive === true ? 'Active' : 'Inactive'}
+            </Pill>
+          </td>
           <td className={styles.tableRow}>
             <Button component="a" href={`/dashboard/customers/${customer.customerId}`}>
               view

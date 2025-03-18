@@ -22,6 +22,13 @@
       "when": 1741563622338,
       "tag": "0002_UUID_Column_Customer_invoice_InvoiceDocuments_Tables",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1742320781174,
+      "tag": "0003_Updated_Schema",
+      "breakpoints": true
     }
   ]
 }

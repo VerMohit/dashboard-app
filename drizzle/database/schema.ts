@@ -35,7 +35,6 @@ import {
   integer,
   pgTable,
   serial,
-  text,
   varchar,
   uuid
 } from 'drizzle-orm/pg-core';
@@ -51,9 +50,9 @@ export const Customer = pgTable('customers', {
     .unique()
     .notNull()
     .default(sql`gen_random_uuid()`), 
-  firstName: text('first_name')
+  firstName: varchar('first_name', { length: 255 })
     .notNull(),
-  lastName: text('last_name')
+  lastName: varchar('last_name', { length: 255 })
     .notNull(),
   phoneNo: varchar('phone_number', { length: 15 })
     .unique()
@@ -61,22 +60,22 @@ export const Customer = pgTable('customers', {
   email: varchar('email', { length: 255 })
     .unique()
     .notNull(),
-  companyName: varchar('company_name', { length: 355 })
+  companyName: varchar('company_name', { length: 255 })
     .unique()
     .notNull(),
-  unitNo: varchar('unit_no', { length: 7 })
+  unitNo: varchar('unit_no', { length: 20 })
     .default(''),
-  street: text('street')
+  street: varchar('street', { length: 255 })
     .notNull(),
-  city: text('city')
+  city: varchar('city', { length: 255 })
     .notNull(),
-  postalCode: text('postal_code')
+  postalCode: varchar('postal_code', { length: 7 })
     .notNull(),
-  state: text('state')
+  state: varchar('state', { length: 30 })
     .notNull(),
-  country: text('country')
+  country: varchar('country', { length: 255 })
     .notNull(),
-  notes: text('notes')
+  notes: varchar('notes', { length: 50 })
     .default(''),
   isActive: boolean('is_active')
     .default(true),   // Soft delete purposes
@@ -97,7 +96,7 @@ export const Invoices = pgTable('invoices', {
   customerId: integer('customer_id')
     .references(() => Customer.customerId)
     .notNull(),
-  invoiceNumber: text('invoice_number')
+  invoiceNumber: varchar('invoice_number', { length: 50 })
     .unique()
     .notNull(),
   amount: decimal('amount', { precision: 10, scale: 2 })
@@ -108,11 +107,14 @@ export const Invoices = pgTable('invoices', {
   invoiceDate: date('invoice_date')
     .defaultNow()
     .notNull(),              // Default to current date and time
-  invoiceStatus: text('invoice_status')
+  invoiceStatus: varchar('invoice_status', { length: 10 })
     .default(InvoiceStatus.Unpaid)
     .notNull(),
-  
-  isArchived: boolean('is_archived').default(false).notNull(),  // Soft delete purposes
+  invoiceNotes: varchar('invoice_notes', { length: 50 })
+    .default(''),
+  isArchived: boolean('is_archived')
+    .default(false)
+    .notNull(),  // Soft delete purposes
 });
 
 // InvoiceDocuments table
@@ -125,7 +127,7 @@ export const InvoiceDocuments = pgTable('invoice_documents', {
   fileName: varchar('file_name', { length: 255 })
     .unique()
     .notNull(),
-  filePath: text('file_path')
+  filePath: varchar('file_path', { length: 255 })
     .unique()
     .notNull(),
   fileType: varchar('file_type', { length: 50 })
