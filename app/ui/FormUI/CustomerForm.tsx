@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 import { Select, TextInput } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import { CustomerFormValues } from '@/app/types/customerTypes';
@@ -12,8 +14,10 @@ import {
 
 export default function CustomerForm({
   custForm,
+  formUsage = 'newCustomer',
 }: {
   custForm: UseFormReturnType<CustomerFormValues>;
+  formUsage: string;
 }) {
   const provincesAndTerritories = [
     'Alberta',
@@ -30,6 +34,13 @@ export default function CustomerForm({
     'Nunavut',
     'Yukon',
   ];
+
+  const [charCount, setCharCount] = useState(0);
+
+  // Using debounce callback to set the notes field in the customerForm object
+  const changeNotesField = useDebouncedCallback((value: string) => {
+    custForm.setFieldValue('notes', value);
+  }, 50);
 
   return (
     <>
@@ -63,57 +74,80 @@ export default function CustomerForm({
         description="ex: myEmail@exmaple.ca"
       />
       <FormInputField labelName="Company Name" formVar="companyName" form={custForm} />
-      <TextInput
-        mt="md"
-        label="Unit Number"
-        key={custForm.key('unitNo')}
-        {...custForm.getInputProps('unitNo')}
-      />
-      <FormInputField
-        labelName="Street Name"
-        formVar="streetName"
-        formatFunc={formatCapitalizeString}
-        form={custForm}
-      />
-      <FormInputField
-        labelName="City"
-        formVar="city"
-        formatFunc={formatCapitalizeString}
-        form={custForm}
-      />
-      <FormInputField
-        labelName="Zip/Postal Code"
-        placeHolder="A1A 2B2"
-        formVar="postalCode"
-        formatFunc={validateAndFormatZip}
-        form={custForm}
-        description="ex: A1A 2B2"
-      />
-      <FormInputField
-        labelName="Country"
-        formVar="country"
-        formatFunc={formatCapitalizeString}
-        form={custForm}
-      />
-      <Select
-        label="Province"
-        withAsterisk
-        placeholder="Pick province"
-        data={provincesAndTerritories}
-        {...custForm.getInputProps('state')}
-        withScrollArea={false}
-        styles={{ dropdown: { maxHeight: 150, overflowY: 'auto' } }}
-        mt="md"
-        searchable
-        allowDeselect
-        clearable
-      />
-      <FormInputField
-        labelName="Notes"
-        formVar="notes"
-        formatFunc={formatCapitalizeString}
-        form={custForm}
-      />
+
+      {formUsage !== 'newInvoice' && (
+        <>
+          <TextInput
+            mt="md"
+            label="Unit Number"
+            key={custForm.key('unitNo')}
+            {...custForm.getInputProps('unitNo')}
+          />
+          <FormInputField
+            labelName="Street Name"
+            formVar="streetName"
+            formatFunc={formatCapitalizeString}
+            form={custForm}
+          />
+          <FormInputField
+            labelName="City"
+            formVar="city"
+            formatFunc={formatCapitalizeString}
+            form={custForm}
+          />
+          <FormInputField
+            labelName="Zip/Postal Code"
+            placeHolder="A1A 2B2"
+            formVar="postalCode"
+            formatFunc={validateAndFormatZip}
+            form={custForm}
+            description="ex: A1A 2B2"
+          />
+          <FormInputField
+            labelName="Country"
+            formVar="country"
+            formatFunc={formatCapitalizeString}
+            form={custForm}
+          />
+          <Select
+            label="Province"
+            withAsterisk
+            placeholder="Select province"
+            data={provincesAndTerritories}
+            {...custForm.getInputProps('state')}
+            withScrollArea={false}
+            styles={{ dropdown: { maxHeight: 150, overflowY: 'auto' } }}
+            mt="md"
+            searchable
+            // allowDeselect
+            // clearable
+          />
+          {/* <FormInputField
+            labelName="Notes"
+            formVar="notes"
+            formatFunc={formatCapitalizeString}
+            form={custForm}
+            requiredProp={false}
+          /> */}
+          <TextInput
+            mt="md"
+            label="Notes"
+            key={custForm.key('notes')}
+            {...custForm.getInputProps('notes')}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              setCharCount(newValue.length);
+            }}
+            onBlur={(e) => {
+              const newValue = e.target.value;
+              changeNotesField(newValue); // Call the debounced function when user leaves the input
+            }}
+          />
+          <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>
+            {charCount}/1000
+          </div>
+        </>
+      )}
     </>
   );
 }

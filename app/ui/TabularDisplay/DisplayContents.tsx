@@ -1,6 +1,6 @@
-import { CustomerRequestData } from '../types/customerTypes';
-import { InvoiceTableData } from '../types/invoiceTypes';
-import { getBaseUrlServerSide } from '../utility/getBaseUrlServerSide';
+import { CustomerRequestData } from '../../types/customerTypes';
+import { InvoiceTableData } from '../../types/invoiceTypes';
+import { getBaseUrlServerSide } from '../../utility/getBaseUrlServerSide';
 import { TabularDisplay } from './TabularDisplay';
 
 export async function DisplayContents({
@@ -28,8 +28,6 @@ export async function DisplayContents({
     // console.log(data);
 
     return <TabularDisplay tableHeadings={displayHeadings} data={data} dataType={dataType} />;
-
-    // return <p>placeholder text</p>;
   } catch (error) {
     console.error(`Error fetching ${apiResource} data:`, error);
 

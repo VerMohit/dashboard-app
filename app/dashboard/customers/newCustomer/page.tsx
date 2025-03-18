@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { Button, Group } from '@mantine/core';
 import { hasLength, isEmail, isNotEmpty, matches, useForm } from '@mantine/form';
@@ -23,7 +24,7 @@ export default function Page() {
       streetName: '',
       city: '',
       postalCode: '',
-      state: '',
+      state: 'Select Province',
       country: '',
       notes: '',
     },
@@ -39,6 +40,7 @@ export default function Page() {
       postalCode: matches(/^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/, 'Enter valid zip/postal code'),
       country: isNotEmpty('Country is required'),
       state: isNotEmpty('Select a state/province'),
+      notes: hasLength({ max: 1000 }, 'Cannot exceed 1000 characters'),
     },
   });
 
@@ -62,46 +64,79 @@ export default function Page() {
   const submutDataDB = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevents the default form submission behavior
 
-    // Validate the input fields against the validate field
-    const isCustomerValid = customerForm.validate();
-    const isInvoiceValid = invoiceForm.validate();
+    const custFormHasErrors = customerForm.validate().hasErrors;
+    const invoiceFormHasErrors = invoiceForm.validate().hasErrors;
 
-    if (!isCustomerValid.hasErrors && !isInvoiceValid.hasErrors) {
-      const baseURL = getBaseUrlClientSide();
+    // When invoice and customer being added, check both form fields for errors
+    const bothFormsHaveErrors = addInvoice && (custFormHasErrors || invoiceFormHasErrors);
 
-      const response = await fetch(`${baseURL}customers`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          customer: customerForm.getValues(),
-          invoice: invoiceForm.getValues(),
-        }),
-      });
+    // When only customer being added
+    const custFormHasErros = !addInvoice && custFormHasErrors;
 
-      if (!response.ok) {
-        console.log(`Couldn't complete request: ${response.statusText}`);
-        const errorData = await response.json();
-        toast.error(`Error: ${errorData.message || response.statusText}`);
-      } else {
-        toast.success('Customer (and invoices) successfully saved!');
-        customerForm.reset();
-        invoiceForm.reset();
-      }
+    if (bothFormsHaveErrors || custFormHasErros) {
+      return;
+    }
+
+    const baseURL = getBaseUrlClientSide();
+
+    const response = await fetch(`${baseURL}customers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        customer: customerForm.getValues(),
+        invoice: invoiceForm.getValues(),
+      }),
+    });
+
+    if (!response.ok) {
+      console.log(`Couldn't complete request: ${response.statusText}`);
+      const errorData = await response.json();
+      toast.error(`Error: ${errorData.message || response.statusText}`);
+    } else {
+      toast.success('Customer (and invoices) successfully saved!');
+      customerForm.reset();
+      invoiceForm.reset();
     }
   };
+
+  const [addInvoice, setAddInvoice] = useState<boolean>(false);
 
   return (
     <>
       <form onSubmit={submutDataDB}>
-        <CustomerForm custForm={customerForm} />
-        <InvoiceForm invoiceForm={invoiceForm} />
+        <h3>Customer Information</h3>
+        <CustomerForm custForm={customerForm} formUsage="newCustomer" />
+        {!addInvoice && (
+          <Group justify="flex-end" mt="md">
+            <Button type="button" onClick={() => setAddInvoice(true)}>
+              Add Invoice
+            </Button>
+          </Group>
+        )}
+        {addInvoice && (
+          <div>
+            <h3>Invoice Information</h3>
+            <InvoiceForm invoiceForm={invoiceForm} />
+            <Group justify="flex-end" mt="md">
+              <Button
+                type="button"
+                onClick={() => {
+                  setAddInvoice(false);
+                  invoiceForm.reset();
+                }}
+              >
+                Remove Invoice
+              </Button>
+            </Group>
+          </div>
+        )}
         <Group justify="flex-end" mt="md">
           <Button type="submit">Submit</Button>
         </Group>
       </form>
-      <ToastContainer position="top-center" autoClose={5000} />
+      <ToastContainer position="top-center" autoClose={3500} />
     </>
   );
 }

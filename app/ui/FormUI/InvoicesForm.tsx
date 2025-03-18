@@ -23,7 +23,8 @@ export default function InvoiceForm({
         labelName="Issue Date"
         formVar="invoiceDate"
         form={invoiceForm}
-        description="ex. YYYY-MM-DD"
+        description="ex. YYYY-MM-DD  (Note: If no date provided, defualts to todays date)"
+        requiredProp={false}
       />
       <FormInputField
         labelName="Amount"

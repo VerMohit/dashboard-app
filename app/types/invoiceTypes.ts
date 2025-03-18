@@ -1,7 +1,10 @@
-import { CustomerDetails } from "./customerTypes"
+import { CustomerDetails, CustomerFormValues, CustomerRequestData } from "./customerTypes"
 
 // For form request data coming from fronend when submitting invoice related data
 type InvoiceRequestData = {
+    invoiceId: number,
+    invoiceUUID?: number,
+    customerUUID?: number,
     invoiceNumber: string,
     customerId: number,
     amount: string,
@@ -26,8 +29,8 @@ type InsertedInvoice = {
 
 // The invoice data retreived from the DB has 2 objects: customers and invoices
 type InvoiceTableData = {
-    customers: CustomerDetails,
-    invoices: InsertedInvoice
+    customers: CustomerRequestData , //CustomerDetails,
+    invoices: InvoiceRequestData, //InsertedInvoice
 }
 
 // Defining the shape for the values used in the form for creating new invoices

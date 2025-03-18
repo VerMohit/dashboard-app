@@ -1,0 +1,40 @@
+/* TabularDisplay.module.css */
+.tableContainer {
+  border: 3px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 50vh;
+  overflow-y: auto;
+}
+
+.tableRow {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  width: 500px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tableHeading {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 3px solid #ddd;
+}
+
+.statusPaid {
+  background-color: #a5d6a7;
+  text-align: center;
+  font-weight: bold;
+  width: 4rem;
+  display: inline-block;
+}
+
+.statusUnpaid {
+  background-color: #ffcc80;
+  text-align: center;
+  font-weight: bold;
+  width: 4rem;
+  display: inline-block;
+}
