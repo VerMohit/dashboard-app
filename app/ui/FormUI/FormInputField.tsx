@@ -47,8 +47,9 @@ export default function FormInputField<T>({
   };
 
   return (
-    <>
+    <div>
       <TextInput
+        radius="50px"
         label={labelName}
         placeholder={placeHolder}
         mt="md"
@@ -59,6 +60,6 @@ export default function FormInputField<T>({
         onBlur={customOnBlur}
       />
       <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>{description}</div>
-    </>
+    </div>
   );
 }

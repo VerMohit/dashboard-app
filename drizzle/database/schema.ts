@@ -110,7 +110,7 @@ export const Invoices = pgTable('invoices', {
   invoiceStatus: varchar('invoice_status', { length: 10 })
     .default(InvoiceStatus.Unpaid)
     .notNull(),
-  invoiceNotes: varchar('invoice_notes', { length: 50 })
+  invoiceNotes: varchar('invoice_notes', { length: 1000 })
     .default(''),
   isArchived: boolean('is_archived')
     .default(false)

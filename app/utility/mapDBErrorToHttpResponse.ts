@@ -15,7 +15,10 @@ export const mapDBErrorToHttpResponse = (errorCode: any) => {
             }
         // Postgres code for Datetime field overflow (invalid date format)
         case '22008':
-            return new ValidationError('Invalid date - either MM or DD for month is not valid');
+            return new ValidationError('Invalid date - either MM or DD is not valid');
+        // Postgres code for String data right truncation - string too long for target column's defined length
+        case '22001':
+            return new ValidationError('One or more fields exceed the allowed length. Please shorten the input.');
         // Postgres code for NOT NULL vioation (field cannot be NULL)
         case '23502':
             return new ValidationError('Some fields are missing');

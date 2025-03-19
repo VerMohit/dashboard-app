@@ -1,6 +1,9 @@
 import { AppError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
+import { CustomerFormValues, CustomerInsertValues } from "@/app/types/customerTypes";
+import { InsertedInvoice, InvoiceFormValues } from "@/app/types/invoiceTypes";
+import { formatCapitalizeString } from "@/app/utility/formatValues";
 import { mapDBErrorToHttpResponse } from "@/app/utility/mapDBErrorToHttpResponse";
-import { validatePaidStatus } from "@/app/utility/validateValues";
+import { validateCustomerInsertedData, validateInvoiceInsertedData, validatePaidStatus } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";
 import { Customer, Invoices } from "@/drizzle/database/schema";
 import { eq, ilike, or, and } from "drizzle-orm";
@@ -80,51 +83,70 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
 
     try {
-        const {customer, invoice} = await req.json();
+        const {customer, invoice, addInvoice} = await req.json();
         const uuid = uuidv4();
         // console.log('Customer body: ', customer);
         // console.log('Invoice body email: ', invoice);
         // console.log('UUIDD body: ', uuid);
+        // console.log(addInvoice)
 
         await db.transaction(async (tsx) => {
 
-            const insertCustomerValues = {
+            const customerValues: CustomerInsertValues = {
                 customerUUID: uuid,
-                firstName: customer.firstName,
-                lastName: customer.lastName,
+                firstName: formatCapitalizeString(customer.firstName).formattedValue,
+                lastName: formatCapitalizeString(customer.lastName).formattedValue,
                 phoneNo: customer.phoneNo,
                 email: customer.email,
-                companyName: customer.companyName,
+                companyName: formatCapitalizeString(customer.companyName).formattedValue,
                 unitNo: customer.unitNo,
-                street: customer.streetName,
-                city: customer.city,
+                street: formatCapitalizeString(customer.street).formattedValue,
+                city: formatCapitalizeString(customer.city).formattedValue,
                 postalCode: customer.postalCode,
-                country: customer.country,
-                state: customer.state,
+                country: formatCapitalizeString(customer.country).formattedValue,
+                state: formatCapitalizeString(customer.state).formattedValue,
                 notes: customer.notes,
             }
 
-            if(invoice.invoiceNo === '') {
-                await tsx.insert(Customer).values( insertCustomerValues );
+            // Pre-insertion validations
+            const errCust = validateCustomerInsertedData(customerValues)
+            if(errCust !== null) {
+                throw new ValidationError(errCust)
+            }
+
+            if(!addInvoice) {
+                await tsx.insert(Customer).values( customerValues );
             }
             else {
                 const newCustomer = await tsx.insert(Customer)
-                                             .values( insertCustomerValues )
+                                             .values( customerValues )
                                              .returning({ customerId: Customer.customerId });
                 
                 const newCustID = newCustomer[0].customerId
 
-                const newInvoice = await tsx.insert(Invoices).values({
+                const invoiceValues: InsertedInvoice = {
                     customerUUID: uuid,
                     customerId: newCustID,
                     invoiceNumber: invoice.invoiceNo,
                     amount: invoice.amount,
                     amountPaid: invoice.amountPaid,
-                    // invoiceStatus: invoice.paidStatus,
                     invoiceStatus: validatePaidStatus(invoice.amount, invoice.amountPaid),
-                    ...(invoice.invoiceDate && invoice.invoiceDate.trim() !== "" ? { invoiceDate: invoice.invoiceDate } : {}),
-                })
-                .returning( {invoiceUUID: Invoices.invoiceUUID} );
+                    invoiceDate: invoice.invoiceDate.trim() || undefined, 
+                    invoiceNotes: invoice.invoiceNotes,
+                };
+                
+                // Pre-insertion validations
+                const errInvoice = validateInvoiceInsertedData(invoiceValues);
+                if (errInvoice !== null) {
+                    throw new ValidationError(errInvoice);
+                }
+                
+                // Insert into DB
+                const newInvoice = await tsx
+                    .insert(Invoices)
+                    .values(invoiceValues)
+                    .returning({ invoiceUUID: Invoices.invoiceUUID });
+                
 
                 // This variable would be used for the invoice_document table
                 console.log(newInvoice[0].invoiceUUID);
