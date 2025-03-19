@@ -18,21 +18,22 @@ type CustomerRequestData = {
   isActive: boolean
   }
 
-type CustomerDetails = {
-  firstName: string;
-  lastName: string;
-  companyName: string;
-};
+// type CustomerDetails = {
+//   firstName: string;
+//   lastName: string;
+//   companyName: string;
+// };
 
 // Defining the shape for the values used in the form for creating new customers
 type CustomerFormValues = {
+  customerUUID?: string,
   firstName: string;
   lastName: string;
   phoneNo: string;
   email: string;
   companyName: string;
-  unitNo: string;
-  streetName?: string;
+  unitNo?: string;
+  street?: string;
   city?: string;
   postalCode?: string;
   state?: string;
@@ -40,4 +41,20 @@ type CustomerFormValues = {
   notes?: string;
 };
 
-  export type {CustomerRequestData, CustomerDetails, CustomerFormValues};
+type CustomerInsertValues = {
+  customerUUID: string,
+  firstName: string;
+  lastName: string;
+  phoneNo: string;
+  email: string;
+  companyName: string;
+  unitNo: string;
+  street: string;
+  city: string;
+  postalCode: string;
+  state: string;
+  country: string;
+  notes: string;
+};
+
+  export type {CustomerRequestData, CustomerInsertValues, CustomerFormValues};

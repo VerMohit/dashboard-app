@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { Button, Group } from '@mantine/core';
+import { Button, Container, Group } from '@mantine/core';
 import { hasLength, isEmail, isNotEmpty, matches, useForm } from '@mantine/form';
 import { CustomerFormValues } from '@/app/types/customerTypes';
 import { InvoiceFormValues } from '@/app/types/invoiceTypes';
@@ -21,7 +21,7 @@ export default function Page() {
       email: '',
       companyName: '',
       unitNo: '',
-      streetName: '',
+      street: '',
       city: '',
       postalCode: '',
       state: 'Select Province',
@@ -35,12 +35,12 @@ export default function Page() {
       phoneNo: isNotEmpty('Phone number is required'),
       email: isEmail('Invalid email'),
       companyName: hasLength({ min: 2 }, 'Company name must be at least 2 characters long'),
-      streetName: isNotEmpty('Street name required'),
+      street: isNotEmpty('Street name required'),
       city: isNotEmpty('City required'),
       postalCode: matches(/^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/, 'Enter valid zip/postal code'),
       country: isNotEmpty('Country is required'),
       state: isNotEmpty('Select a state/province'),
-      notes: hasLength({ max: 1000 }, 'Cannot exceed 1000 characters'),
+      notes: hasLength({ max: 50 }, 'Cannot exceed 50 characters'),
     },
   });
 
@@ -51,6 +51,7 @@ export default function Page() {
       invoiceDate: '',
       amount: '',
       amountPaid: '',
+      invoiceNotes: '',
     },
 
     validate: {
@@ -58,6 +59,7 @@ export default function Page() {
       invoiceDate: validateDateFormat,
       amount: validateAmountFormat,
       amountPaid: validateAmountFormat,
+      invoiceNotes: hasLength({ max: 50 }, 'Cannot exceed 1000 characters'),
     },
   });
 
@@ -87,6 +89,7 @@ export default function Page() {
       body: JSON.stringify({
         customer: customerForm.getValues(),
         invoice: invoiceForm.getValues(),
+        addInvoice, //passing in shorthand
       }),
     });
 
@@ -98,16 +101,26 @@ export default function Page() {
       toast.success('Customer (and invoices) successfully saved!');
       customerForm.reset();
       invoiceForm.reset();
+      setcustNoteCount(0);
+      setInvNoteCount(0);
     }
   };
 
+  const [custNoteCount, setcustNoteCount] = useState(0);
+  const [invNoteCount, setInvNoteCount] = useState(0);
   const [addInvoice, setAddInvoice] = useState<boolean>(false);
+  console.log(addInvoice);
 
   return (
-    <>
+    <Container>
       <form onSubmit={submutDataDB}>
         <h3>Customer Information</h3>
-        <CustomerForm custForm={customerForm} formUsage="newCustomer" />
+        <CustomerForm
+          custNoteCount={custNoteCount}
+          setcustNoteCount={setcustNoteCount}
+          custForm={customerForm}
+          formUsage="newCustomer"
+        />
         {!addInvoice && (
           <Group justify="flex-end" mt="md">
             <Button type="button" onClick={() => setAddInvoice(true)}>
@@ -118,7 +131,11 @@ export default function Page() {
         {addInvoice && (
           <div>
             <h3>Invoice Information</h3>
-            <InvoiceForm invoiceForm={invoiceForm} />
+            <InvoiceForm
+              invNoteCount={invNoteCount}
+              setInvNoteCount={setInvNoteCount}
+              invoiceForm={invoiceForm}
+            />
             <Group justify="flex-end" mt="md">
               <Button
                 type="button"
@@ -137,6 +154,6 @@ export default function Page() {
         </Group>
       </form>
       <ToastContainer position="top-center" autoClose={3500} />
-    </>
+    </Container>
   );
 }

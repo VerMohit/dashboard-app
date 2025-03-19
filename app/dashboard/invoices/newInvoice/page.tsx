@@ -38,6 +38,7 @@ export default function Page() {
       invoiceDate: '',
       amount: '',
       amountPaid: '',
+      invoiceNotes: '',
     },
 
     validate: {

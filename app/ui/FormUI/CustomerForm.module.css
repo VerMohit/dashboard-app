@@ -1,0 +1,13 @@
+/* CustomerForm.module.css */
+
+/* Adjust the layout of the fields */
+.formRow {
+  background-color: aliceblue;
+  display: flex;
+  gap: 2rem; /* Space between fields */
+  /* width: 100%; */
+}
+
+.formRow > div {
+  flex: 1; /* Make each field take up equal width */
+}

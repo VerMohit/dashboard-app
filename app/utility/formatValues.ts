@@ -54,18 +54,20 @@ const validateAndFormatZip = (zipCode: string) => {
     : {formattedValue: null, err: 'Please check zip/postal code format'}
 };
 
-const validateAndFormatPhone = (phoneNo : string) => {
-  // Replace all non-digit chars
-  const cleanedPhoneNo = phoneNo.trim().replace(/\D/g, '');
 
-  // If country code provided, then length of cleanedPhoneNo = 11
-  if(cleanedPhoneNo.length < 10 || cleanedPhoneNo.length > 11) {
-    return {formattedValue: null, err: 'Invalid phone number'};
+const validateAndFormatPhone = (phoneNo: string) => {
+  
+  const trimmedPhoneNo = phoneNo.trim();
+  
+  // Check if the trimmed phone number contains only digits
+  const validPhoneRegex = /^\d+$/;
+  const isPhoneValid = validPhoneRegex.test(trimmedPhoneNo) && trimmedPhoneNo.length === 10;
+
+  if (!isPhoneValid) {
+    return { formattedValue: null, err: 'Invalid phone Number. Please check for errors and remove country code' };
   }
 
-  return cleanedPhoneNo.length === 10 ? 
-    {formattedValue: `+1${cleanedPhoneNo}`, err: null}  
-    : {formattedValue: `+${cleanedPhoneNo}`, err: null} ;
+  return {formattedValue: `${trimmedPhoneNo}`, err: null };
 }
 
 const formatCapitalizeString = (str: string) => {
