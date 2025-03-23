@@ -1,6 +1,6 @@
 import { AppError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
 import { CustomerFormValues, CustomerInsertValues } from "@/app/types/customerTypes";
-import { InsertedInvoice, InvoiceFormValues } from "@/app/types/invoiceTypes";
+import { InsertedInvoice} from "@/app/types/invoiceTypes";
 import { formatCapitalizeString } from "@/app/utility/formatValues";
 import { mapDBErrorToHttpResponse } from "@/app/utility/mapDBErrorToHttpResponse";
 import { validateCustomerInsertedData, validateInvoiceInsertedData, validatePaidStatus } from "@/app/utility/validateValues";

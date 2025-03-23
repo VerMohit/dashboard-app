@@ -1,8 +1,8 @@
 import { AiFillFileAdd } from 'react-icons/ai';
 import { Button, Container, Flex } from '@mantine/core';
-import CustomButton from '@/app/ui/CustomButton';
 import { lusitana } from '@/app/ui/fonts';
 import FilterOptions from '@/app/ui/FormUI/FilterOptions';
+import LinkButton from '@/app/ui/LinkButton';
 import Search from '@/app/ui/Search';
 import { DisplayContents } from '@/app/ui/TabularDisplay/DisplayContents';
 
@@ -43,7 +43,9 @@ export default async function Page(queryParmas: {
       <br />
       {/* <InvoiceFilter /> */}
       <FilterOptions whichCategory="invoice" />
-      <CustomButton link="./invoices/newInvoice" label="Add Invoice" icon={<AiFillFileAdd />} />
+      <Flex justify="flex-end" my="1rem">
+        <LinkButton link="./invoices/newInvoice" label="Add Invoice" icon={<AiFillFileAdd />} />
+      </Flex>
       <DisplayContents
         queryParams={queryString}
         apiResource="invoices"

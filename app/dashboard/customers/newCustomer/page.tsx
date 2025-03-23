@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { AiFillFileAdd } from 'react-icons/ai';
+import { FaCheckSquare } from 'react-icons/fa';
+import { HiDocumentRemove } from 'react-icons/hi';
 import { toast, ToastContainer } from 'react-toastify';
-import { Button, Container, Group } from '@mantine/core';
+import { Button, Container, Flex, Group } from '@mantine/core';
 import { hasLength, isEmail, isNotEmpty, matches, useForm } from '@mantine/form';
 import { CustomerFormValues } from '@/app/types/customerTypes';
 import { InvoiceFormValues } from '@/app/types/invoiceTypes';
 import CustomerForm from '@/app/ui/FormUI/CustomerForm';
-import InvoiceForm from '@/app/ui/FormUI/InvoicesForm';
 import { getBaseUrlClientSide } from '@/app/utility/getBaseUrlClientSide';
 import { validateAmountFormat, validateDateFormat } from '@/app/utility/validateValues';
 
@@ -109,7 +111,7 @@ export default function Page() {
   const [custNoteCount, setcustNoteCount] = useState(0);
   const [invNoteCount, setInvNoteCount] = useState(0);
   const [addInvoice, setAddInvoice] = useState<boolean>(false);
-  console.log(addInvoice);
+  // console.log(addInvoice);
 
   return (
     <Container>
@@ -122,36 +124,57 @@ export default function Page() {
           formUsage="newCustomer"
         />
         {!addInvoice && (
-          <Group justify="flex-end" mt="md">
-            <Button type="button" onClick={() => setAddInvoice(true)}>
-              Add Invoice
+          <Flex mt="md" mb="md" justify="space-between" align="center">
+            <Button type="button" radius="10px" onClick={() => setAddInvoice(true)}>
+              <Flex gap="0.5rem" justify="center" align="center">
+                <AiFillFileAdd />
+                Add Invoice
+              </Flex>
             </Button>
-          </Group>
+            <Button type="submit" radius="10px">
+              <Flex gap="0.5rem" justify="center" align="center">
+                <FaCheckSquare />
+                Submit
+              </Flex>
+            </Button>
+          </Flex>
         )}
         {addInvoice && (
           <div>
+            <br />
+            <hr />
             <h3>Invoice Information</h3>
-            <InvoiceForm
+            <InvoiceFormOLD
               invNoteCount={invNoteCount}
               setInvNoteCount={setInvNoteCount}
               invoiceForm={invoiceForm}
             />
-            <Group justify="flex-end" mt="md">
+            <Flex mt="md" mb="md" justify="space-between" align="center">
               <Button
                 type="button"
+                radius="10px"
                 onClick={() => {
                   setAddInvoice(false);
                   invoiceForm.reset();
                 }}
               >
-                Remove Invoice
+                <Flex gap="0.5rem" justify="center" align="center">
+                  <HiDocumentRemove />
+                  Remove Invoice
+                </Flex>
               </Button>
-            </Group>
+              <Button type="submit" radius="10px">
+                <Flex gap="0.5rem" justify="center" align="center">
+                  <FaCheckSquare />
+                  Submit
+                </Flex>
+              </Button>
+            </Flex>
           </div>
         )}
-        <Group justify="flex-end" mt="md">
+        {/* <Group justify="flex-end" mt="md">
           <Button type="submit">Submit</Button>
-        </Group>
+        </Group> */}
       </form>
       <ToastContainer position="top-center" autoClose={3500} />
     </Container>

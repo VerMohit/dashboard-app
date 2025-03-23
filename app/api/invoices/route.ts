@@ -1,5 +1,9 @@
-import { AppError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
-import { validatePaidStatus } from "@/app/utility/validateValues";
+import { AppError, NotFoundError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
+import { CustomerFormValues } from "@/app/types/customerTypes";
+import { InsertedInvoice, InvoiceFormValues } from "@/app/types/invoiceTypes";
+import { formatCapitalizeString } from "@/app/utility/formatValues";
+import { mapDBErrorToHttpResponse } from "@/app/utility/mapDBErrorToHttpResponse";
+import { validateCustomerInsertedData, validateInvoiceInsertedData, validatePaidStatus } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";
 import { Customer, Invoices } from "@/drizzle/database/schema";
 import { eq, ilike, or, and, desc, asc, sql } from "drizzle-orm";
@@ -92,58 +96,91 @@ export async function GET(req: Request) {
     }
 }
 
+type RequestBody = {
+    customer: CustomerFormValues;
+    invoice: InvoiceFormValues[];
+}
+
+
+// Function processes all the invovices added concurrently. If a single promise fails, transaction rolls back and throws error
+//  if everything passes, then the invoiceUUID array will be returned
+const processInvoices = async (customerExists: { customerId: number; customerUUID: string}, invoice: InvoiceFormValues[]) => {
+    return db.transaction(async (tsx) => {
+        // Promise.all will handle async insert operations in parallel
+        const invoiceUUIDs = await Promise.all(
+            invoice.map(async (invoice) => {
+                const invoiceValues: InsertedInvoice = {
+                    customerUUID: customerExists.customerUUID,
+                    customerId: customerExists.customerId,
+                    invoiceNumber: invoice.invoiceNo,
+                    amount: invoice.amount,
+                    amountPaid: invoice.amountPaid,
+                    invoiceStatus: validatePaidStatus(invoice.amount, invoice.amountPaid),
+                    invoiceDate: invoice.invoiceDate.trim() || undefined, 
+                    invoiceNotes: invoice.invoiceNotes,
+                };
+                
+                // Pre-insertion validations
+                const errInvoice = validateInvoiceInsertedData(invoiceValues);
+                if (errInvoice !== null) {
+                    throw new ValidationError(errInvoice);
+                }
+                
+                // Insert into DB
+                const newInvoice = await tsx
+                    .insert(Invoices)
+                    .values(invoiceValues)
+                    .returning({ invoiceUUID: Invoices.invoiceUUID });
+    
+
+                // This variable would be used for the invoice_document table
+                return newInvoice[0].invoiceUUID;
+            })
+        )
+        return invoiceUUIDs;
+    });
+
+}
+
 
 export async function POST(req: Request) {
 
     try {
-        // const {customer, invoice} = await req.json();
-        // const uuid = uuidv4();
-        // // console.log('Customer body: ', customer);
-        // // console.log('Invoice body email: ', invoice);
-        // // console.log('UUIDD body: ', uuid);
+        const {customer, invoice}: RequestBody = await req.json();
+        console.log('Customer body: ', customer);
+        console.log('Invoice body email: ', invoice);
 
-        // await db.transaction(async (tsx) => {
+        await db.transaction(async (tsx) => {
 
-        //     const insertCustomerValues = {
-        //         firstName: customer.firstName,
-        //         lastName: customer.lastName,
-        //         phoneNo: customer.phoneNo,
-        //         email: customer.email,
-        //         companyName: customer.companyName,
-        //     }
+            const companyName = formatCapitalizeString(customer.companyName).formattedValue;
+            const phoneNo = customer.phoneNo;
+            const email = customer.email;
 
+            const customerExists = await tsx.select({ customerId: Customer.customerId, customerUUID: Customer.customerUUID })
+                                            .from(Customer)
+                                            .where(or(
+                                                    eq(Customer.phoneNo, phoneNo),
+                                                    eq(Customer.email, email), 
+                                                    eq(Customer.companyName, companyName)
+                                                )
+                                            )
+                                            .limit(1);
+
+            if(!customerExists.length) {
+                const mssg: string = 'Customer not found. \n Make sure Customer details are correct or add the customer first.'
+                throw new NotFoundError(mssg)
+            }
+
+            console.log('Customer found!')
+
+            // Process the invoices to be submitted into the db
+            // This variable would be used for the invoice_document table when added in future
+            const invoiceUUID = await processInvoices(customerExists[0], invoice) 
+            console.log(invoiceUUID);
             
-        //     //  TODO: check to see what the value of the invoice is if we don't fill it in at all. If null, use that as the condition check insetad 
-        //     if(invoice.invoiceNo === '') {
-        //         await tsx.insert(Customer).values( insertCustomerValues );
-        //     }
-        //     else {
-        //         const newCustomer = await tsx.insert(Customer)
-        //                                      .values( insertCustomerValues )
-        //                                      .returning({ customerId: Customer.customerId });
-                
-        //         const newCustID = newCustomer[0].customerId
+        });
 
-        //         const newInvoice = await tsx.insert(Invoices).values({
-        //             customerUUID: uuid,
-        //             customerId: newCustID,
-        //             invoiceNumber: invoice.invoiceNo,
-        //             amount: invoice.amount,
-        //             amountPaid: invoice.amountPaid,
-        //             // invoiceStatus: invoice.paidStatus,
-        //             invoiceStatus: validatePaidStatus(invoice.amount, invoice.amountPaid),
-        //             ...(invoice.invoiceDate && invoice.invoiceDate.trim() !== "" ? { invoiceDate: invoice.invoiceDate } : {}),
-        //         })
-        //         .returning( {invoiceUUID: Invoices.invoiceUUID} );
-
-        //         // This variable would be used for the invoice_document table
-        //         console.log(newInvoice[0].invoiceUUID);
-        //     }
-        // });
-
-        console.log('hello')
-
-        return NextResponse.json('Successfully added new invoice');
+        return NextResponse.json('Successfully added new invoice(s)');
     } catch (error: any) {
         console.log("error: ", error);  // debugging purposes
 
@@ -171,4 +208,3 @@ export async function POST(req: Request) {
         );
     }
 }
-

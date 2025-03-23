@@ -19,8 +19,8 @@ export default function CustomerForm({
   custForm,
   formUsage = 'newCustomer',
 }: {
-  custNoteCount: number;
-  setcustNoteCount: Dispatch<SetStateAction<number>>;
+  custNoteCount?: number;
+  setcustNoteCount?: Dispatch<SetStateAction<number>>;
   custForm: UseFormReturnType<CustomerFormValues>;
   formUsage: string;
 }) {

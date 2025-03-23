@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
+import { Container } from '@mantine/core';
 import { InvoiceRequestData } from '@/app/types/invoiceTypes';
 import { CustomerRequestData } from '../types/customerTypes';
 import { getBaseUrlClientSide } from '../utility/getBaseUrlClientSide';
@@ -46,7 +47,7 @@ export default function CustomerView({
   };
 
   return (
-    <div>
+    <Container>
       {/* <p>`customer ${customer.customerId}`</p> */}
       {isEditing ? (
         <CustomerUpdateForm //TODO: Add this
@@ -65,6 +66,6 @@ export default function CustomerView({
         />
       )}
       <ToastContainer position="top-center" autoClose={5000} />
-    </div>
+    </Container>
   );
 }
