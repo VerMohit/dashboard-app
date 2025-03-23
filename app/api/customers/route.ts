@@ -123,16 +123,17 @@ export async function POST(req: Request) {
                                              .returning({ customerId: Customer.customerId });
                 
                 const newCustID = newCustomer[0].customerId
+                const insertedInvoice = invoice[0];
 
                 const invoiceValues: InsertedInvoice = {
                     customerUUID: uuid,
                     customerId: newCustID,
-                    invoiceNumber: invoice.invoiceNo,
-                    amount: invoice.amount,
-                    amountPaid: invoice.amountPaid,
-                    invoiceStatus: validatePaidStatus(invoice.amount, invoice.amountPaid),
-                    invoiceDate: invoice.invoiceDate.trim() || undefined, 
-                    invoiceNotes: invoice.invoiceNotes,
+                    invoiceNumber: insertedInvoice.invoiceNo,
+                    amount: insertedInvoice.amount,
+                    amountPaid: insertedInvoice.amountPaid,
+                    invoiceStatus: validatePaidStatus(insertedInvoice.amount, insertedInvoice.amountPaid),
+                    invoiceDate: insertedInvoice.invoiceDate.trim() || undefined, 
+                    invoiceNotes: insertedInvoice.invoiceNotes,
                 };
                 
                 // Pre-insertion validations
