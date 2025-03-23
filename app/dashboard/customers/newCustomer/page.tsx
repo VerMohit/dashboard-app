@@ -1,17 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { AiFillFileAdd } from 'react-icons/ai';
 import { FaCheckSquare } from 'react-icons/fa';
 import { HiDocumentRemove } from 'react-icons/hi';
 import { toast, ToastContainer } from 'react-toastify';
-import { Button, Container, Flex, Group } from '@mantine/core';
+import { Button, Container, Flex } from '@mantine/core';
 import { hasLength, isEmail, isNotEmpty, matches, useForm } from '@mantine/form';
 import { CustomerFormValues } from '@/app/types/customerTypes';
-import { InvoiceFormValues } from '@/app/types/invoiceTypes';
 import CustomerForm from '@/app/ui/FormUI/CustomerForm';
+import InvoiceForm, { InvoiceFormHandle } from '@/app/ui/FormUI/InvoiceForm';
 import { getBaseUrlClientSide } from '@/app/utility/getBaseUrlClientSide';
-import { validateAmountFormat, validateDateFormat } from '@/app/utility/validateValues';
+import styles from '../../../ui/Button.module.css';
 
 export default function Page() {
   const customerForm = useForm<CustomerFormValues>({
@@ -46,76 +46,80 @@ export default function Page() {
     },
   });
 
-  const invoiceForm = useForm<InvoiceFormValues>({
-    mode: 'uncontrolled',
-    initialValues: {
-      invoiceNo: '',
-      invoiceDate: '',
-      amount: '',
-      amountPaid: '',
-      invoiceNotes: '',
-    },
+  const [invoiceCount, setInvoiceCount] = useState(0);
+  const invoiceFormsRef = useRef<InvoiceFormHandle[]>([]);
+  const [custNoteCount, setcustNoteCount] = useState(0);
+  const [addInvoice, setAddInvoice] = useState<boolean>(false);
 
-    validate: {
-      invoiceNo: isNotEmpty('Invoice number is required'),
-      invoiceDate: validateDateFormat,
-      amount: validateAmountFormat,
-      amountPaid: validateAmountFormat,
-      invoiceNotes: hasLength({ max: 50 }, 'Cannot exceed 1000 characters'),
-    },
-  });
-
-  const submutDataDB = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevents the default form submission behavior
-
-    const custFormHasErrors = customerForm.validate().hasErrors;
-    const invoiceFormHasErrors = invoiceForm.validate().hasErrors;
-
-    // When invoice and customer being added, check both form fields for errors
-    const bothFormsHaveErrors = addInvoice && (custFormHasErrors || invoiceFormHasErrors);
-
-    // When only customer being added
-    const custFormHasErros = !addInvoice && custFormHasErrors;
-
-    if (bothFormsHaveErrors || custFormHasErros) {
-      return;
-    }
-
-    const baseURL = getBaseUrlClientSide();
-
-    const response = await fetch(`${baseURL}customers`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        customer: customerForm.getValues(),
-        invoice: invoiceForm.getValues(),
-        addInvoice, //passing in shorthand
-      }),
-    });
-
-    if (!response.ok) {
-      console.log(`Couldn't complete request: ${response.statusText}`);
-      const errorData = await response.json();
-      toast.error(`Error: ${errorData.message || response.statusText}`);
-    } else {
-      toast.success('Customer (and invoices) successfully saved!');
-      customerForm.reset();
-      invoiceForm.reset();
-      setcustNoteCount(0);
-      setInvNoteCount(0);
+  const addInvoiceCount = () => {
+    if (invoiceCount < 2) {
+      setInvoiceCount(1);
+      setAddInvoice(true);
     }
   };
 
-  const [custNoteCount, setcustNoteCount] = useState(0);
-  const [invNoteCount, setInvNoteCount] = useState(0);
-  const [addInvoice, setAddInvoice] = useState<boolean>(false);
-  // console.log(addInvoice);
+  const removeInvoice = (index: number) => {
+    invoiceFormsRef.current.splice(index, 1);
+    setInvoiceCount(0);
+    setAddInvoice(false);
+  };
+
+  const submitDataDB = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const customerValidation = customerForm.validate();
+
+    if (customerValidation.hasErrors) {
+      toast.error('Please correct errors in the customer form.');
+      return;
+    }
+
+    try {
+      const invoiceData = await Promise.all(
+        invoiceFormsRef.current.map((form) => form?.validateAndGetValues())
+      );
+
+      const validInvoices = invoiceData.filter(Boolean);
+
+      if (validInvoices.length !== invoiceCount) {
+        toast.error('Please correct errors in all invoice forms.');
+        return;
+      }
+
+      console.log('Customer Data:', customerForm.getValues());
+      console.log('Invoice Data:', validInvoices);
+
+      const baseURL = getBaseUrlClientSide();
+
+      const response = await fetch(`${baseURL}customers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer: customerForm.getValues(),
+          invoice: validInvoices,
+          addInvoice, //passing in shorthand
+        }),
+      });
+
+      if (!response.ok) {
+        console.log(`Couldn't complete request: ${response.statusText}`);
+        const errorData = await response.json();
+        toast.error(`Error: ${errorData.message || response.statusText}`);
+      } else {
+        toast.success('Customer (and invoices) successfully saved!');
+        customerForm.reset();
+        invoiceFormsRef.current.forEach((form) => form.reset());
+      }
+    } catch (error) {
+      console.error('Validation failed:', error);
+      toast.error('An error occurred during form submission.');
+    }
+  };
 
   return (
     <Container>
-      <form onSubmit={submutDataDB}>
+      <form onSubmit={submitDataDB}>
         <h3>Customer Information</h3>
         <CustomerForm
           custNoteCount={custNoteCount}
@@ -125,16 +129,10 @@ export default function Page() {
         />
         {!addInvoice && (
           <Flex mt="md" mb="md" justify="space-between" align="center">
-            <Button type="button" radius="10px" onClick={() => setAddInvoice(true)}>
+            <Button className={styles.addInvoiceButton} type="button" onClick={addInvoiceCount}>
               <Flex gap="0.5rem" justify="center" align="center">
                 <AiFillFileAdd />
                 Add Invoice
-              </Flex>
-            </Button>
-            <Button type="submit" radius="10px">
-              <Flex gap="0.5rem" justify="center" align="center">
-                <FaCheckSquare />
-                Submit
               </Flex>
             </Button>
           </Flex>
@@ -144,37 +142,39 @@ export default function Page() {
             <br />
             <hr />
             <h3>Invoice Information</h3>
-            <InvoiceFormOLD
-              invNoteCount={invNoteCount}
-              setInvNoteCount={setInvNoteCount}
-              invoiceForm={invoiceForm}
-            />
-            <Flex mt="md" mb="md" justify="space-between" align="center">
-              <Button
-                type="button"
-                radius="10px"
-                onClick={() => {
-                  setAddInvoice(false);
-                  invoiceForm.reset();
-                }}
-              >
-                <Flex gap="0.5rem" justify="center" align="center">
-                  <HiDocumentRemove />
-                  Remove Invoice
+            {Array.from({ length: invoiceCount }).map((_, index) => (
+              <div key={index}>
+                <InvoiceForm
+                  ref={(el) => {
+                    if (el) {
+                      invoiceFormsRef.current[index] = el;
+                    }
+                  }}
+                />
+                <Flex mt="md" mb="md" justify="flex-start" align="center">
+                  <Button
+                    className={styles.removeInvoiceButton}
+                    type="button"
+                    onClick={() => removeInvoice(index)}
+                  >
+                    <Flex gap="0.5rem" justify="center" align="center">
+                      <HiDocumentRemove />
+                      Remove Invoice
+                    </Flex>
+                  </Button>
                 </Flex>
-              </Button>
-              <Button type="submit" radius="10px">
-                <Flex gap="0.5rem" justify="center" align="center">
-                  <FaCheckSquare />
-                  Submit
-                </Flex>
-              </Button>
-            </Flex>
+              </div>
+            ))}
           </div>
         )}
-        {/* <Group justify="flex-end" mt="md">
-          <Button type="submit">Submit</Button>
-        </Group> */}
+        <Flex mt="md" mb="md" justify="flex-end">
+          <Button className={styles.submitButton} type="submit">
+            <Flex gap="0.5rem" justify="center" align="center">
+              <FaCheckSquare />
+              Submit
+            </Flex>
+          </Button>
+        </Flex>
       </form>
       <ToastContainer position="top-center" autoClose={3500} />
     </Container>

@@ -35,7 +35,7 @@ export default function Page() {
   const [invoiceCount, setInvoiceCount] = useState(1);
   const invoiceFormsRef = useRef<InvoiceFormHandle[]>([]);
 
-  const addInvoice = () => {
+  const addInvoiceCount = () => {
     if (invoiceCount < 3) {
       setInvoiceCount((prev) => prev + 1);
     }
@@ -138,7 +138,7 @@ export default function Page() {
                 </Button>
               )}
               {index === invoiceCount - 1 && invoiceCount < 3 && (
-                <Button className={styles.addInvoiceButton} type="button" onClick={addInvoice}>
+                <Button className={styles.addInvoiceButton} type="button" onClick={addInvoiceCount}>
                   <Flex gap="0.5rem" justify="center" align="center">
                     <AiFillFileAdd />
                     Add Invoice
