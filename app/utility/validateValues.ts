@@ -67,6 +67,8 @@ const custParamLengths = {
   notes: notesLength,
 };
 
+
+
 const validateCustomerInsertedData = (data: CustomerInsertValues): string | null => {
   const {formattedPhone, err: phoenErr} = validateAndFormatPhone(data.phoneNo);
   if(phoenErr) {

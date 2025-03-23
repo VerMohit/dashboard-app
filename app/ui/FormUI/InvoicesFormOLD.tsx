@@ -8,7 +8,7 @@ import { validateAndFormatAmount } from '@/app/utility/formatValues';
 import Notes from './Notes';
 import styles from './CustomerForm.module.css';
 
-export default function InvoiceForm({
+export default function InvoiceFormOLD({
   invNoteCount,
   setInvNoteCount,
   invoiceForm,

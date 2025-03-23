@@ -1,9 +1,8 @@
 import { IoPersonAddSharp } from 'react-icons/io5';
-import { Button, Container, Flex } from '@mantine/core';
-import CustomButton from '@/app/ui/CustomButton';
-import { CustomerFilter } from '@/app/ui/CustomerFilter';
+import { Container, Flex } from '@mantine/core';
 import { lusitana } from '@/app/ui/fonts';
 import FilterOptions from '@/app/ui/FormUI/FilterOptions';
+import LinkButton from '@/app/ui/LinkButton';
 import Search from '@/app/ui/Search';
 import { DisplayContents } from '@/app/ui/TabularDisplay/DisplayContents';
 
@@ -32,11 +31,13 @@ export default async function Page(queryParmas: {
       <Search placeholder="Search customers..." />
       <br />
       <FilterOptions whichCategory="customer" />
-      <CustomButton
-        link="./customers/newCustomer"
-        label="Add Customer"
-        icon={<IoPersonAddSharp />}
-      />
+      <Flex justify="flex-end" my="1rem">
+        <LinkButton
+          link="./customers/newCustomer"
+          label="Add Customer"
+          icon={<IoPersonAddSharp />}
+        />
+      </Flex>
       <DisplayContents
         queryParams={queryString}
         apiResource="customers"

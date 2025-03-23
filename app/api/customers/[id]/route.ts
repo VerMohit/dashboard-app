@@ -31,10 +31,10 @@ export async function GET(req: Request, {params}: Params) {
 
         // Compute the remaining balance sum using Drizzle's raw query functionality
         const remainingBalanceSum = await db.select( { 
-                                                                balance: sql<number>`SUM("amount" - "amount_paid")`
+                                                        balance: sql<number>`SUM("amount" - "amount_paid")`
                                                                 .as('balance') } )
-                                                  .from(Invoices)
-                                                  .where(eq(Invoices.customerId, id))
+                                                                .from(Invoices)
+                                                                .where(eq(Invoices.customerId, id))
 
         const data = await db.transaction(async (tsx) => {
             const result = await tsx.select()

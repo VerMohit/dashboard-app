@@ -9,8 +9,8 @@ import { PathValue } from '@mantine/form/lib/types';
 type InputProps<T> = {
   formVar: keyof T;
   form: UseFormReturnType<T>; // Using generic type <T> gives us flexibilty to pass any shape of useForm (making this compnent general purpose)
-  counter: number;
-  setFn: Dispatch<SetStateAction<number>>;
+  counter?: number;
+  setFn?: Dispatch<SetStateAction<number>>;
   maxCharLimit: number;
 };
 

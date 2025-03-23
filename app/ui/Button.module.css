@@ -1,0 +1,38 @@
+.removeInvoiceButton {
+    background-color: #FF6666; /* Darker warm red background */
+    color: #FFFFFF; /* White text */
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .removeInvoiceButton:hover {
+    background-color: #FF3737; /* Slightly darker on hover for feedback */
+  }
+  
+  .addInvoiceButton {
+    background-color: #34C759; /* Green background */
+    color: #FFFFFF;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .addInvoiceButton:hover {
+    background-color: #2AB54A; /* Slightly darker green on hover */
+  }
+  
+  .submitButton {
+    background-color: #2196F3; /* Blue background */
+    color: #FFFFFF;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .submitButton:hover {
+    background-color: #1976D2; /* Slightly darker blue on hover */
+  }

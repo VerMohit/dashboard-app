@@ -2,7 +2,7 @@
 
 /* Adjust the layout of the fields */
 .formRow {
-  background-color: aliceblue;
+  /* background-color: aliceblue; */
   display: flex;
   gap: 2rem; /* Space between fields */
   /* width: 100%; */
@@ -10,4 +10,11 @@
 
 .formRow > div {
   flex: 1; /* Make each field take up equal width */
+}
+
+.hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  margin: 16px 0;
 }
