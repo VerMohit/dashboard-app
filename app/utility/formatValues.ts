@@ -87,6 +87,7 @@ const formatPhoneNo = (phone: string) => {
   const exchange = phone.slice(5, 8);
   const extension = phone.slice(8);
   return `${countryCode} (${areaCode})-${exchange}-${extension}`;
+  // return `(${areaCode})-${exchange}-${extension}`;
 };
 
 const formatAddress = (

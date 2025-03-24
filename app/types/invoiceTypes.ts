@@ -20,7 +20,7 @@ type InsertedInvoice = {
     customerUUID: string,
     customerId: number,
     invoiceNumber: string,
-    invoiceDate: string | undefined,
+    invoiceDate: string,
     amount: string,
     amountPaid: string,
     invoiceNotes: string,

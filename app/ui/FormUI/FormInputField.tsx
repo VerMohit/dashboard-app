@@ -35,6 +35,7 @@ export default function FormInputField<T>({
   const customOnBlur = () => {
     if (formatFunc) {
       const value = form.getValues()[formVar as keyof T] as string;
+
       const { formattedValue, err } = formatFunc(value);
       if (formattedValue !== null) {
         // as PathValue<T, keyof T> needed to ensure correct typing with setFieldValue

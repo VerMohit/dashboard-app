@@ -42,7 +42,7 @@ type CustomerFormValues = {
 };
 
 type CustomerInsertValues = {
-  customerUUID: string,
+  customerUUID?: string,
   firstName: string;
   lastName: string;
   phoneNo: string;
