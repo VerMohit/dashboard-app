@@ -1,14 +1,13 @@
-import { AppError, NotFoundError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
+import { AppError, ConflictError, NotFoundError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
 import { CustomerFormValues } from "@/app/types/customerTypes";
 import { InsertedInvoice, InvoiceFormValues } from "@/app/types/invoiceTypes";
 import { formatCapitalizeString } from "@/app/utility/formatValues";
 import { mapDBErrorToHttpResponse } from "@/app/utility/mapDBErrorToHttpResponse";
-import { validateCustomerInsertedData, validateInvoiceInsertedData, validatePaidStatus } from "@/app/utility/validateValues";
+import { validateInvoiceInsertedData, validatePaidStatus } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";
 import { Customer, Invoices } from "@/drizzle/database/schema";
 import { eq, ilike, or, and, desc, asc, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { v4 as uuidv4 } from 'uuid';
 
 
 export async function GET(req: Request) {
@@ -112,7 +111,7 @@ const processInvoices = async (customerExists: { customerId: number; customerUUI
                 const invoiceValues: InsertedInvoice = {
                     customerUUID: customerExists.customerUUID,
                     customerId: customerExists.customerId,
-                    invoiceNumber: invoice.invoiceNo,
+                    invoiceNumber: invoice.invoiceNumber,
                     amount: invoice.amount,
                     amountPaid: invoice.amountPaid,
                     invoiceStatus: validatePaidStatus(invoice.amount, invoice.amountPaid),
@@ -171,7 +170,11 @@ export async function POST(req: Request) {
                 throw new NotFoundError(mssg)
             }
 
-            console.log('Customer found!')
+            // Check for duplicate invoice numbers using a Set
+            const invoiceNumbers = new Set(invoice.map(inv => inv.invoiceNumber));
+            if (invoiceNumbers.size !== invoice.length) {
+                throw new ConflictError('Duplicate invoice number found. Please correct the error.');
+            }
 
             // Process the invoices to be submitted into the db
             // This variable would be used for the invoice_document table when added in future

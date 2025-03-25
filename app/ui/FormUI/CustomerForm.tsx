@@ -21,7 +21,7 @@ export type CustomerFormHandle = {
 
 type CustomerFormProps = {
   formUsage?: string;
-  customerInitialValues: CustomerFormValues; // Add this line
+  customerInitialValues: CustomerFormValues;
 };
 
 const CustomerForm = forwardRef<CustomerFormHandle, CustomerFormProps>(

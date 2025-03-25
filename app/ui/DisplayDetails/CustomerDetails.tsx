@@ -1,6 +1,4 @@
-import { MdOutlinePublishedWithChanges } from 'react-icons/md';
-import { TiUserDelete } from 'react-icons/ti';
-import { Button, Container, Flex, Pill, Table } from '@mantine/core';
+import { Container, Flex, Pill, Table } from '@mantine/core';
 import { CustomerRequestData } from '@/app/types/customerTypes';
 import { InvoiceRequestData } from '@/app/types/invoiceTypes';
 import {
@@ -148,25 +146,6 @@ export default function CustomerDetails({
           <tbody>{rows}</tbody>
         </Table>
       </Container>
-      {/* <br /> */}
-      {/* <Flex mt="md" mb="lg" justify="space-between" align="center">
-        <Flex mt="md" mb="md" justify="flex-end">
-          <Button className={styles.removeButton} type="submit">
-            <Flex gap="0.5rem" justify="center" align="center">
-              <TiUserDelete />
-              Delete Customer
-            </Flex>
-          </Button>
-        </Flex>
-        <Flex mt="md" mb="md" justify="flex-end">
-          <Button className={styles.updateButton} type="submit">
-            <Flex gap="0.5rem" justify="center" align="center">
-              <MdOutlinePublishedWithChanges />
-              Update Customer
-            </Flex>
-          </Button>
-        </Flex>
-      </Flex> */}
     </div>
   );
 }

@@ -1,13 +1,10 @@
 import { InvoiceStatus } from "@/drizzle/lib/invoiceEnum";
 import { ValidationError } from "../CustomErrors/CustomErrorrs";
 import { CustomerInsertValues } from "../types/customerTypes";
-import { validateAndFormatPhone, validateAndFormatZip } from "./formatValues";
+import { validateAndFormatZip } from "./formatValues";
 import { InsertedInvoice } from "../types/invoiceTypes";
 
 const validateAmountFormat = (amountString: string) => {
-  // if(amountString === "") {
-  //   return null
-  // }
   const isValidFormat = amountString.match(/^\d+(\.\d{0,2})?$/);
   const isPositive = parseFloat(amountString) >= 0;
   return isValidFormat && isPositive ? null : 'Invalid amount format';
@@ -70,10 +67,6 @@ const custParamLengths = {
 
 
 const validateCustomerInsertedData = (data: CustomerInsertValues): string | null => {
-  // const {formattedPhone, err: phoenErr} = validateAndFormatPhone(data.phoneNo);
-  // if(phoenErr) {
-  //   return phoenErr;
-  // }
 
   const emailErr = validateEmail(data.email);
   if(emailErr) {
@@ -106,6 +99,8 @@ const invoiceParamLengths = {
 };
 
 const validateInvoiceInsertedData = (data: InsertedInvoice): string | null => {
+
+  console.log(data)
 
   if(data.invoiceNumber.length > invoiceParamLengths.invoiceNumber) {
     return 'Invoice number fields exceed the allowed length. Please shorten the input.'

@@ -6,8 +6,8 @@ import { FaCheckSquare } from 'react-icons/fa';
 import { HiDocumentRemove } from 'react-icons/hi';
 import { toast, ToastContainer } from 'react-toastify';
 import { Button, Container, Flex } from '@mantine/core';
-import { hasLength, isEmail, isNotEmpty, matches, useForm } from '@mantine/form';
-import { CustomerFormValues, CustomerRequestData } from '@/app/types/customerTypes';
+import { CustomerFormValues } from '@/app/types/customerTypes';
+import { InvoiceFormValues } from '@/app/types/invoiceTypes';
 import CustomerForm, { CustomerFormHandle } from '@/app/ui/FormUI/CustomerForm';
 import InvoiceForm, { InvoiceFormHandle } from '@/app/ui/FormUI/InvoiceForm';
 import { getBaseUrlClientSide } from '@/app/utility/getBaseUrlClientSide';
@@ -29,43 +29,18 @@ export default function Page() {
     notes: '',
   };
 
-  // const customerForm = useForm<CustomerFormValues>({
-  //   mode: 'uncontrolled',
-  //   initialValues: {
-  //     firstName: '',
-  //     lastName: '',
-  //     phoneNo: '',
-  //     email: '',
-  //     companyName: '',
-  //     unitNo: '',
-  //     street: '',
-  //     city: '',
-  //     postalCode: '',
-  //     state: 'Select Province',
-  //     country: '',
-  //     notes: '',
-  //   },
-
-  //   validate: {
-  //     firstName: isNotEmpty('First name is required'), //hasLength({ min: 2 }, 'First name must be at least 2 characters long'),
-  //     lastName: isNotEmpty('Last name is required'), // hasLength({ min: 2 }, 'Last name must be at least 2 characters long'),
-  //     phoneNo: isNotEmpty('Phone number is required'),
-  //     email: isEmail('Invalid email'),
-  //     companyName: hasLength({ min: 2 }, 'Company name must be at least 2 characters long'),
-  //     street: isNotEmpty('Street name required'),
-  //     city: isNotEmpty('City required'),
-  //     postalCode: matches(/^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/, 'Enter valid zip/postal code'),
-  //     country: isNotEmpty('Country is required'),
-  //     state: isNotEmpty('Select a state/province'),
-  //     notes: hasLength({ max: 50 }, 'Cannot exceed 50 characters'),
-  //   },
-  // });
+  const invoiceInitialValues: InvoiceFormValues = {
+    invoiceNumber: '',
+    invoiceDate: '',
+    amount: '',
+    amountPaid: '',
+    invoiceNotes: '',
+  };
 
   const [invoiceCount, setInvoiceCount] = useState(0);
   const invoiceFormsRef = useRef<InvoiceFormHandle[]>([]);
   const custFormRef = useRef<CustomerFormHandle>(null);
 
-  // const [custNoteCount, setcustNoteCount] = useState(0);
   const [addInvoice, setAddInvoice] = useState<boolean>(false);
 
   const addInvoiceCount = () => {
@@ -107,7 +82,6 @@ export default function Page() {
         return;
       }
 
-      // console.log('Customer Data:', customerForm.getValues());
       console.log('Customer Data:', customerData);
       console.log('Invoice Data:', validInvoices);
 
@@ -144,11 +118,7 @@ export default function Page() {
     <Container>
       <form onSubmit={submitDataDB}>
         <h3>Customer Information</h3>
-        <CustomerForm
-          ref={custFormRef}
-          customerInitialValues={custFormInitialValues}
-          // formUsage="newCustomer"
-        />
+        <CustomerForm ref={custFormRef} customerInitialValues={custFormInitialValues} />
         {!addInvoice && (
           <Flex mt="md" mb="md" justify="space-between" align="center">
             <Button className={styles.addButton} type="button" onClick={addInvoiceCount}>
@@ -172,6 +142,7 @@ export default function Page() {
                       invoiceFormsRef.current[index] = el;
                     }
                   }}
+                  invoiceInitialValues={invoiceInitialValues}
                 />
                 <Flex mt="md" mb="md" justify="flex-start" align="center">
                   <Button

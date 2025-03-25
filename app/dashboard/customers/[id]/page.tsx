@@ -41,6 +41,4 @@ export default async function page({
       />
     </div>
   );
-
-  return <div>CustomerID: {custId}</div>;
 }

@@ -1,5 +1,5 @@
 import { AppError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
-import { CustomerFormValues, CustomerInsertValues } from "@/app/types/customerTypes";
+import { CustomerInsertValues } from "@/app/types/customerTypes";
 import { InsertedInvoice} from "@/app/types/invoiceTypes";
 import { formatCapitalizeString, validateAndFormatPhone } from "@/app/utility/formatValues";
 import { mapDBErrorToHttpResponse } from "@/app/utility/mapDBErrorToHttpResponse";
@@ -85,19 +85,15 @@ export async function POST(req: Request) {
     try {
         const {customer, invoice, addInvoice} = await req.json();
         const uuid = uuidv4();
-        // console.log('Customer body: ', customer);
-        // console.log('Invoice body email: ', invoice);
-        // console.log('UUIDD body: ', uuid);
-        // console.log(addInvoice)
+
+        const {formattedValue, err: phoneErr} = validateAndFormatPhone(customer.phoneNo);
+        if(phoneErr) {
+            throw new ValidationError(phoneErr)
+        }
+
+        const formattedPhone = `+1${formattedValue}`
 
         await db.transaction(async (tsx) => {
-
-            const {formattedValue, err: phoneErr} = validateAndFormatPhone(customer.phoneNo);
-            if(phoneErr) {
-                throw new ValidationError(phoneErr)
-            }
-
-            const formattedPhone = `+1${formattedValue}`
 
             const customerValues: CustomerInsertValues = {
                 customerUUID: uuid,
@@ -127,15 +123,20 @@ export async function POST(req: Request) {
             else {
                 const newCustomer = await tsx.insert(Customer)
                                              .values( customerValues )
-                                             .returning({ customerId: Customer.customerId });
+                                             .returning({ customerId: Customer.customerId }) as { customerId: number }[];
                 
-                const newCustID = newCustomer[0].customerId
+                const newCustID = newCustomer[0]?.customerId as number;
+
+                if (newCustID === undefined || newCustID === null) {
+                    throw new ValidationError('Customer ID is required for invoice insertion');
+                }
+                
                 const insertedInvoice = invoice[0];
 
                 const invoiceValues: InsertedInvoice = {
                     customerUUID: uuid,
                     customerId: newCustID,
-                    invoiceNumber: insertedInvoice.invoiceNo,
+                    invoiceNumber: insertedInvoice.invoiceNumber,
                     amount: insertedInvoice.amount,
                     amountPaid: insertedInvoice.amountPaid,
                     invoiceStatus: validatePaidStatus(insertedInvoice.amount, insertedInvoice.amountPaid),
@@ -148,14 +149,13 @@ export async function POST(req: Request) {
                 if (errInvoice !== null) {
                     throw new ValidationError(errInvoice);
                 }
-                
+
                 // Insert into DB
                 const newInvoice = await tsx
                     .insert(Invoices)
                     .values(invoiceValues)
                     .returning({ invoiceUUID: Invoices.invoiceUUID });
                 
-
                 // This variable would be used for the invoice_document table
                 console.log(newInvoice[0].invoiceUUID);
             }
