@@ -1,3 +1,5 @@
+import { Flex } from '@mantine/core';
+
 type formattingMethod = ((value: string) => string) | ((value: string[]) => string);
 
 type Params = {
@@ -14,9 +16,9 @@ export default function ItemDetail({ label, value, formatMethod }: Params) {
       : value;
 
   return (
-    <p>
-      <strong>{label}: </strong>
+    <Flex mb="md">
+      <div style={{ fontWeight: '600', width: '150px' }}>{label}: </div>
       {displayValue}
-    </p>
+    </Flex>
   );
 }

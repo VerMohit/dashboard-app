@@ -1,176 +1,198 @@
 'use client';
 
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, forwardRef, SetStateAction, useImperativeHandle, useState } from 'react';
 import { Select, TextInput } from '@mantine/core';
-import { UseFormReturnType } from '@mantine/form';
+import { hasLength, isEmail, isNotEmpty, matches, useForm, UseFormReturnType } from '@mantine/form';
+import { ValidationError } from '@/app/CustomErrors/CustomErrorrs';
 import { CustomerFormValues } from '@/app/types/customerTypes';
-import FormInputField from '@/app/ui/FormUI/FormInputField';
 import {
   formatCapitalizeString,
   validateAndFormatPhone,
   validateAndFormatZip,
 } from '@/app/utility/formatValues';
+import FormInputField from './FormInputField';
 import Notes from './Notes';
 import styles from './CustomerForm.module.css';
 
-export default function CustomerForm({
-  custNoteCount,
-  setcustNoteCount,
-  custForm,
-  formUsage = 'newCustomer',
-}: {
-  custNoteCount?: number;
-  setcustNoteCount?: Dispatch<SetStateAction<number>>;
-  custForm: UseFormReturnType<CustomerFormValues>;
-  formUsage: string;
-}) {
-  const provincesAndTerritories = [
-    'Alberta',
-    'British Columbia',
-    'Manitoba',
-    'New Brunswick',
-    'Newfoundland and Labrador',
-    'Nova Scotia',
-    'Ontario',
-    'Prince Edward Island',
-    'Quebec',
-    'Saskatchewan',
-    'Northwest Territories',
-    'Nunavut',
-    'Yukon',
-  ];
+export type CustomerFormHandle = {
+  validateAndGetValues: () => Promise<any>;
+  reset: () => void;
+};
 
-  // const [custNoteCount, setcustNoteCount] = useState(0);
+type CustomerFormProps = {
+  formUsage?: string;
+  customerInitialValues: CustomerFormValues; // Add this line
+};
 
-  // // Using debounce callback to set the notes field in the customerForm object
-  // const changeNotesField = useDebouncedCallback((value: string) => {
-  //   custForm.setFieldValue('notes', value);
-  // }, 50);
+const CustomerForm = forwardRef<CustomerFormHandle, CustomerFormProps>(
+  ({ customerInitialValues, formUsage }, ref) => {
+    const [custNoteCount, setcustNoteCount] = useState(0);
 
-  return (
-    <>
-      <div className={styles.formRow}>
-        <FormInputField
-          labelName="First Name"
-          placeHolder="John"
-          formVar="firstName"
-          formatFunc={formatCapitalizeString}
-          form={custForm}
-        />
-        <FormInputField
-          labelName="Last Name"
-          placeHolder="Doe"
-          formVar="lastName"
-          formatFunc={formatCapitalizeString}
-          form={custForm}
-        />
-      </div>
-      <div className={styles.formRow}>
-        <FormInputField
-          labelName="Phone Number"
-          placeHolder="4162223333"
-          formVar="phoneNo"
-          form={custForm}
-          formatFunc={validateAndFormatPhone}
-          description="ex: 4162223333 (do not include spaces)"
-        />
-        <FormInputField
-          labelName="Email"
-          placeHolder="email@example.ca"
-          formVar="email"
-          form={custForm}
-          description="ex: myEmail@exmaple.ca"
-        />
-      </div>
+    const baseValidation = {
+      firstName: isNotEmpty('First name is required'),
+      lastName: isNotEmpty('Last name is required'),
+      phoneNo: isNotEmpty('Phone number is required'),
+      email: isEmail('Invalid email'),
+      companyName: hasLength({ min: 2 }, 'Company name must be at least 2 characters long'),
+    };
 
-      <FormInputField labelName="Company Name" formVar="companyName" form={custForm} />
+    const formFieldValidation = {
+      ...baseValidation,
+      ...(formUsage !== 'newInvoice' && {
+        street: isNotEmpty('Street name required'),
+        city: isNotEmpty('City required'),
+        postalCode: matches(/^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/, 'Enter valid zip/postal code'),
+        country: isNotEmpty('Country is required'),
+        state: isNotEmpty('Select a state/province'),
+        notes: hasLength({ max: 50 }, 'Cannot exceed 50 characters'),
+      }),
+    };
 
-      {formUsage !== 'newInvoice' && (
-        <>
-          <div className={styles.formRow}>
-            {/* <div className={styles.unitNo}> */}
-            <TextInput
-              radius="50px"
-              width="50px"
-              className={styles.unitNo}
-              w="21px"
-              mt="md"
-              label="Unit Number"
-              key={custForm.key('unitNo')}
-              {...custForm.getInputProps('unitNo')}
-            />
-            {/* </div> */}
+    const customerForm = useForm<CustomerFormValues>({
+      mode: 'uncontrolled',
+      initialValues: customerInitialValues,
+      validate: formFieldValidation,
+    });
 
-            <FormInputField
-              labelName="Street Name"
-              formVar="street"
-              formatFunc={formatCapitalizeString}
-              form={custForm}
-            />
-            <FormInputField
-              labelName="City"
-              formVar="city"
-              formatFunc={formatCapitalizeString}
-              form={custForm}
-            />
-          </div>
-          <div className={styles.formRow}>
-            <FormInputField
-              labelName="Zip/Postal Code"
-              placeHolder="A1A 2B2"
-              formVar="postalCode"
-              formatFunc={validateAndFormatZip}
-              form={custForm}
-              description="ex: A1A 2B2"
-            />
-            <FormInputField
-              labelName="Country"
-              formVar="country"
-              formatFunc={formatCapitalizeString}
-              form={custForm}
-            />
-            <Select
-              radius="50px"
-              label="Province"
-              withAsterisk
-              placeholder="Select province"
-              data={provincesAndTerritories}
-              {...custForm.getInputProps('state')}
-              withScrollArea={false}
-              styles={{ dropdown: { maxHeight: 150, overflowY: 'auto' } }}
-              mt="md"
-              searchable
-              allowDeselect
-              clearable
-            />
-          </div>
-          <Notes
-            formVar="notes"
-            form={custForm}
-            counter={custNoteCount}
-            setFn={setcustNoteCount}
-            maxCharLimit={50}
+    useImperativeHandle(ref, () => ({
+      validateAndGetValues: async () => {
+        const validation = customerForm.validate();
+        if (validation.hasErrors) {
+          return null;
+        }
+        return customerForm.getValues();
+      },
+      reset: () => {
+        customerForm.reset();
+        setcustNoteCount(0);
+      },
+    }));
+
+    const provincesAndTerritories = [
+      'Alberta',
+      'British Columbia',
+      'Manitoba',
+      'New Brunswick',
+      'Newfoundland and Labrador',
+      'Nova Scotia',
+      'Ontario',
+      'Prince Edward Island',
+      'Quebec',
+      'Saskatchewan',
+      'Northwest Territories',
+      'Nunavut',
+      'Yukon',
+    ];
+
+    return (
+      <>
+        <div className={styles.formRow}>
+          <FormInputField
+            labelName="First Name"
+            placeHolder="John"
+            formVar="firstName"
+            formatFunc={formatCapitalizeString}
+            form={customerForm}
           />
-          {/* <Textarea
-            autosize
-            minRows={2} // Adjusts minimum height
-            maxRows={6} // Optional: Prevents excessive growth
-            mt="md"
-            label="Notes"
-            key={custForm.key('notes')}
-            {...custForm.getInputProps('notes')}
-            onChange={(e) => {
-              const newValue = e.target.value;
-              setCharCount(newValue.length);
-            }}
-            onBlur={(e) => {
-              const newValue = e.target.value;
-              changeNotesField(newValue); // Call the debounced function when user leaves the input
-            }}
+          <FormInputField
+            labelName="Last Name"
+            placeHolder="Doe"
+            formVar="lastName"
+            formatFunc={formatCapitalizeString}
+            form={customerForm}
           />
-          <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>{charCount}/50</div> */}
-        </>
-      )}
-    </>
-  );
-}
+        </div>
+        <div className={styles.formRow}>
+          <FormInputField
+            labelName="Phone Number"
+            placeHolder="4162223333"
+            formVar="phoneNo"
+            form={customerForm}
+            formatFunc={validateAndFormatPhone}
+            description="ex: 4162223333 (do not include spaces)"
+          />
+          <FormInputField
+            labelName="Email"
+            placeHolder="email@example.ca"
+            formVar="email"
+            form={customerForm}
+            description="ex: myEmail@exmaple.ca"
+          />
+        </div>
+
+        <FormInputField labelName="Company Name" formVar="companyName" form={customerForm} />
+
+        {formUsage !== 'newInvoice' && (
+          <>
+            <div className={styles.formRow}>
+              <TextInput
+                radius="50px"
+                width="50px"
+                className={styles.unitNo}
+                w="21px"
+                mt="md"
+                label="Unit Number"
+                key={customerForm.key('unitNo')}
+                {...customerForm.getInputProps('unitNo')}
+              />
+              <FormInputField
+                labelName="Street Name"
+                formVar="street"
+                formatFunc={formatCapitalizeString}
+                form={customerForm}
+              />
+              <FormInputField
+                labelName="City"
+                formVar="city"
+                formatFunc={formatCapitalizeString}
+                form={customerForm}
+              />
+            </div>
+            <div className={styles.formRow}>
+              <FormInputField
+                labelName="Zip/Postal Code"
+                placeHolder="A1A 2B2"
+                formVar="postalCode"
+                formatFunc={validateAndFormatZip}
+                form={customerForm}
+                description="ex: A1A 2B2"
+              />
+              <FormInputField
+                labelName="Country"
+                formVar="country"
+                formatFunc={formatCapitalizeString}
+                form={customerForm}
+              />
+              <Select
+                radius="50px"
+                label="Province"
+                withAsterisk
+                placeholder="Select province"
+                data={provincesAndTerritories}
+                {...customerForm.getInputProps('state')}
+                withScrollArea={false}
+                styles={{ dropdown: { maxHeight: 150, overflowY: 'auto' } }}
+                mt="md"
+                searchable
+                allowDeselect
+                clearable
+              />
+            </div>
+            <Notes
+              formVar="notes"
+              form={customerForm}
+              counter={custNoteCount}
+              setFn={setcustNoteCount}
+              maxCharLimit={50}
+            />
+          </>
+        )}
+      </>
+    );
+  }
+);
+
+// Labelling makes it easier to identify the form during debugging when using React DevTools
+CustomerForm.displayName = 'CustomerForm';
+
+export default CustomerForm;

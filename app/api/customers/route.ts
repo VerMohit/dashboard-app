@@ -1,7 +1,7 @@
 import { AppError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
 import { CustomerFormValues, CustomerInsertValues } from "@/app/types/customerTypes";
 import { InsertedInvoice} from "@/app/types/invoiceTypes";
-import { formatCapitalizeString } from "@/app/utility/formatValues";
+import { formatCapitalizeString, validateAndFormatPhone } from "@/app/utility/formatValues";
 import { mapDBErrorToHttpResponse } from "@/app/utility/mapDBErrorToHttpResponse";
 import { validateCustomerInsertedData, validateInvoiceInsertedData, validatePaidStatus } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";
@@ -92,11 +92,18 @@ export async function POST(req: Request) {
 
         await db.transaction(async (tsx) => {
 
+            const {formattedValue, err: phoneErr} = validateAndFormatPhone(customer.phoneNo);
+            if(phoneErr) {
+                throw new ValidationError(phoneErr)
+            }
+
+            const formattedPhone = `+1${formattedValue}`
+
             const customerValues: CustomerInsertValues = {
                 customerUUID: uuid,
                 firstName: formatCapitalizeString(customer.firstName).formattedValue,
                 lastName: formatCapitalizeString(customer.lastName).formattedValue,
-                phoneNo: customer.phoneNo,
+                phoneNo: formattedPhone,
                 email: customer.email,
                 companyName: formatCapitalizeString(customer.companyName).formattedValue,
                 unitNo: customer.unitNo,

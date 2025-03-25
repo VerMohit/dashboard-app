@@ -1,7 +1,10 @@
 // This route.ts file is specifically for dynamic parameter [id]
 
 import { AppError, NotFoundError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
+import { CustomerInsertValues } from "@/app/types/customerTypes";
 import { InvoiceTableData } from "@/app/types/invoiceTypes";
+import { formatCapitalizeString, validateAndFormatPhone } from "@/app/utility/formatValues";
+import { validateCustomerInsertedData } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";
 import { Customer, Invoices } from "@/drizzle/database/schema";
 import { eq, desc, sql } from "drizzle-orm";
@@ -29,12 +32,17 @@ export async function GET(req: Request, {params}: Params) {
         const param = await params;
         const id = paramID(param.id);
 
-        // Compute the remaining balance sum using Drizzle's raw query functionality
-        const remainingBalanceSum = await db.select( { 
-                                                        balance: sql<number>`SUM("amount" - "amount_paid")`
-                                                                .as('balance') } )
-                                                                .from(Invoices)
-                                                                .where(eq(Invoices.customerId, id))
+        // Compute the remaining balanceDue sum using Drizzle's raw query functionality
+        const totalInvoiceDetails = await db.select({ 
+                                                        balanceDue: sql<number>`SUM("amount" - "amount_paid")`
+                                                                        .as('balanceDue'),
+                                                        totalInvoices: sql<number>`COUNT(*)`
+                                                                        .as('totalInvoices'),
+                                                        totalUnpaidInvoices: sql<number>`COUNT(CASE WHEN "invoice_status" = 'Unpaid' THEN 1 END)`
+                                                                        .as('totalUnpaidInvoices')
+                                                    })
+                                                        .from(Invoices)
+                                                        .where(eq(Invoices.customerId, id))
 
         const data = await db.transaction(async (tsx) => {
             const result = await tsx.select()
@@ -46,22 +54,7 @@ export async function GET(req: Request, {params}: Params) {
             return result;
         })
 
-        // console.log(typeof remainingBalanceSum);
-
-
-
-        // const customer = data[0].customers;
-
-        // const invoices = data.map((item) => 
-        //     item.invoices
-        // )
-
-        // console.log(data)
-        // const {customers, invoices} = data[0];
-        // console.log(customer)
-        // console.log(invoices)
-        
-        return NextResponse.json({data, remainingBalanceSum })
+        return NextResponse.json({data, totalInvoiceDetails })
 
     } catch (error) {
         console.log("error: ", error);  // debugging purposes
@@ -88,11 +81,49 @@ export async function GET(req: Request, {params}: Params) {
     }
 }
 
-export async function PATCH(req: Request, { params }: Params) {
+export async function PUT(req: Request, { params }: Params) {
     try {
+        const {updatedCustomer: customer} = await req.json();
         const param = await params;
         const id = paramID(param.id);
         console.log(id);
+
+        const {formattedValue, err: phoneErr} = validateAndFormatPhone(customer.phoneNo);
+        if(phoneErr) {
+            throw new ValidationError(phoneErr);
+        }
+        if(formattedValue == null) {
+            new ValidationError('There is an issue with the phone number, please check');
+        }
+        const formattedPhone = formattedValue
+
+        const customerUpdate: CustomerInsertValues = {
+            firstName: formatCapitalizeString(customer.firstName).formattedValue,
+            lastName: formatCapitalizeString(customer.lastName).formattedValue,
+            phoneNo: formattedPhone!,
+            email: customer.email,
+            companyName: formatCapitalizeString(customer.companyName).formattedValue,
+            unitNo: customer.unitNo,
+            street: formatCapitalizeString(customer.street).formattedValue,
+            city: formatCapitalizeString(customer.city).formattedValue,
+            postalCode: customer.postalCode,
+            country: formatCapitalizeString(customer.country).formattedValue,
+            state: formatCapitalizeString(customer.state).formattedValue,
+            notes: customer.notes,
+        }
+
+        // Pre-insertion validations
+        const errCust = validateCustomerInsertedData(customerUpdate)
+        if(errCust !== null) {
+            throw new ValidationError(errCust)
+        }
+
+        // customerUpdate.phoneNo = customerUpdate.phoneNo.slice(2);
+        // console.log(customerUpdate);
+        
+        await db.transaction(async (tsx) => {
+            await tsx.update(Customer).set(customerUpdate).where(eq(Customer.customerId, id));
+        })
 
         return NextResponse.json({message: 'Changes successful'})
     } catch (error) {

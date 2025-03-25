@@ -1,4 +1,4 @@
-.removeInvoiceButton {
+.removeButton {
     background-color: #FF6666; /* Darker warm red background */
     color: #FFFFFF; /* White text */
     padding: 8px 16px;
@@ -7,11 +7,11 @@
     border-radius: 5px;
   }
   
-  .removeInvoiceButton:hover {
+  .removeButton:hover {
     background-color: #FF3737; /* Slightly darker on hover for feedback */
   }
   
-  .addInvoiceButton {
+  .addButton, .updateButton {
     background-color: #34C759; /* Green background */
     color: #FFFFFF;
     padding: 8px 16px;
@@ -20,7 +20,7 @@
     border-radius: 5px;
   }
   
-  .addInvoiceButton:hover {
+  .addButton:hover, .updateButton:hover {
     background-color: #2AB54A; /* Slightly darker green on hover */
   }
   

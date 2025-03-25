@@ -1,30 +1,68 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { FaCheckSquare } from 'react-icons/fa';
+import { MdCancel, MdOutlinePublishedWithChanges } from 'react-icons/md';
+import { TiUserDelete } from 'react-icons/ti';
 import { toast, ToastContainer } from 'react-toastify';
-import { Container } from '@mantine/core';
+import { Button, Container, Flex } from '@mantine/core';
 import { InvoiceRequestData } from '@/app/types/invoiceTypes';
+import { ValidationError } from '../CustomErrors/CustomErrorrs';
 import { CustomerRequestData } from '../types/customerTypes';
 import { getBaseUrlClientSide } from '../utility/getBaseUrlClientSide';
 import CustomerDetails from './DisplayDetails/CustomerDetails';
+import CustomerForm, { CustomerFormHandle } from './FormUI/CustomerForm';
+import styles from '../ui/Button.module.css';
+
+type CustViewProps = {
+  customerDetails: CustomerRequestData;
+  invoiceDetails: InvoiceRequestData[];
+  totalInvoiceDetails: {
+    balanceDue: number;
+    totalInvoices: number;
+    totalUnpaidInvoices: number;
+  }[];
+};
 
 export default function CustomerView({
   customerDetails,
   invoiceDetails,
-  sumBalance,
-}: {
-  customerDetails: CustomerRequestData;
-  invoiceDetails: InvoiceRequestData[];
-  sumBalance: number;
-}) {
-  //   console.log(customer);
-  //   console.log(invoices);
+  totalInvoiceDetails,
+}: CustViewProps) {
   const [customer, setCustomer] = useState<CustomerRequestData>(customerDetails);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const custFormRef = useRef<CustomerFormHandle>(null);
 
-  const handleUpdate = (updatedCustomer: CustomerRequestData) => {
-    setCustomer(updatedCustomer);
-    setIsEditing(false);
+  const handleUpdate = async () => {
+    if (custFormRef.current) {
+      const updatedCustomer = await custFormRef.current.validateAndGetValues();
+      if (!updatedCustomer) {
+        throw new ValidationError('One or more fields have errors.');
+      }
+      const baseURL = getBaseUrlClientSide();
+      const response = await fetch(`${baseURL}customers/${customer.customerId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          updatedCustomer,
+        }),
+      });
+
+      console.log(response.ok);
+
+      if (!response.ok) {
+        console.log(`Couldn't complete request: ${response.statusText}`);
+        const errorData = await response.json();
+        toast.error(`Error: ${errorData.message || response.statusText}`);
+      } else {
+        toast.success('Customer successfully updated!');
+        custFormRef.current.reset();
+        setCustomer(updatedCustomer);
+        setIsEditing(false);
+      }
+    }
   };
 
   const handleDelete = async () => {
@@ -48,22 +86,68 @@ export default function CustomerView({
 
   return (
     <Container>
-      {/* <p>`customer ${customer.customerId}`</p> */}
       {isEditing ? (
-        <CustomerUpdateForm //TODO: Add this
-          customer={customer}
-          invoices={invoiceDetails}
-          onUpdate={handleUpdate}
-          onCancle={() => setIsEditing(false)}
-        />
+        <div>
+          <CustomerForm
+            ref={custFormRef}
+            customerInitialValues={{ ...customer, phoneNo: customer.phoneNo.slice(2) }}
+            formUsage="newCustomer"
+          />
+          <Flex mt="md" mb="lg" justify="space-between" align="center">
+            <Flex mt="md" mb="md" justify="flex-end">
+              <Button
+                className={styles.removeButton}
+                type="button"
+                onClick={() => setIsEditing(false)}
+              >
+                <Flex gap="0.5rem" justify="center" align="center">
+                  <MdCancel />
+                  Cancel
+                </Flex>
+              </Button>
+            </Flex>
+            <Flex mt="md" mb="md" justify="flex-end">
+              <Button className={styles.submitButton} type="button" onClick={handleUpdate}>
+                <Flex gap="0.5rem" justify="center" align="center">
+                  <FaCheckSquare />
+                  Submit
+                </Flex>
+              </Button>
+            </Flex>
+          </Flex>
+        </div>
       ) : (
-        <CustomerDetails
-          customer={customer}
-          invoices={invoiceDetails}
-          sumBalance={sumBalance}
-          onUpdateClick={() => setIsEditing(true)}
-          onDeleteClick={handleDelete}
-        />
+        <div>
+          <CustomerDetails
+            customer={customer}
+            invoices={invoiceDetails}
+            totalInvoiceDetails={totalInvoiceDetails}
+          />{' '}
+          <Flex mt="md" mb="lg" justify="space-between" align="center">
+            <Flex mt="md" mb="md" justify="flex-end">
+              <Button className={styles.removeButton} type="button" onClick={handleDelete}>
+                <Flex gap="0.5rem" justify="center" align="center">
+                  <TiUserDelete />
+                  Delete Customer
+                </Flex>
+              </Button>
+            </Flex>
+            <Flex mt="md" mb="md" justify="flex-end">
+              <Button
+                className={styles.updateButton}
+                type="button"
+                onClick={() => {
+                  setIsEditing(true);
+                }}
+              >
+                <Flex gap="0.5rem" justify="center" align="center">
+                  <MdOutlinePublishedWithChanges />
+                  Update Customer
+                </Flex>
+              </Button>
+            </Flex>
+          </Flex>
+        </div>
       )}
       <ToastContainer position="top-center" autoClose={5000} />
     </Container>

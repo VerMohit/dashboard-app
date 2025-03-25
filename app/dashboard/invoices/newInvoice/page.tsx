@@ -6,34 +6,24 @@ import { FaCheckSquare } from 'react-icons/fa';
 import { HiDocumentRemove } from 'react-icons/hi';
 import { toast, ToastContainer } from 'react-toastify';
 import { Button, Container, Flex } from '@mantine/core';
-import { hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { CustomerFormValues } from '@/app/types/customerTypes';
-import CustomerForm from '@/app/ui/FormUI/CustomerForm';
+import CustomerForm, { CustomerFormHandle } from '@/app/ui/FormUI/CustomerForm';
 import InvoiceForm, { InvoiceFormHandle } from '@/app/ui/FormUI/InvoiceForm';
 import { getBaseUrlClientSide } from '@/app/utility/getBaseUrlClientSide';
 import styles from '../../../ui/Button.module.css';
 
 export default function Page() {
-  const customerForm = useForm<CustomerFormValues>({
-    mode: 'uncontrolled',
-    initialValues: {
-      firstName: '',
-      lastName: '',
-      phoneNo: '',
-      email: '',
-      companyName: '',
-    },
-    validate: {
-      firstName: isNotEmpty('First name is required'),
-      lastName: isNotEmpty('Last name is required'),
-      phoneNo: isNotEmpty('Phone number is required'),
-      email: isEmail('Invalid email'),
-      companyName: hasLength({ min: 2 }, 'Company name must be at least 2 characters long'),
-    },
-  });
+  const custFormInitialValues: CustomerFormValues = {
+    firstName: '',
+    lastName: '',
+    phoneNo: '',
+    email: '',
+    companyName: '',
+  };
 
   const [invoiceCount, setInvoiceCount] = useState(1);
   const invoiceFormsRef = useRef<InvoiceFormHandle[]>([]);
+  const custFormRef = useRef<CustomerFormHandle>(null);
 
   const addInvoiceCount = () => {
     if (invoiceCount < 3) {
@@ -50,9 +40,16 @@ export default function Page() {
 
   const submitDataDB = async (event: React.FormEvent) => {
     event.preventDefault();
-    const customerValidation = customerForm.validate();
 
-    if (customerValidation.hasErrors) {
+    console.log('here :', custFormRef.current);
+
+    if (!custFormRef.current) {
+      toast.error('An error occured while the customer form loaded.');
+      return;
+    }
+
+    const customerData = await custFormRef.current.validateAndGetValues();
+    if (!customerData) {
       toast.error('Please correct errors in the customer form.');
       return;
     }
@@ -69,7 +66,7 @@ export default function Page() {
         return;
       }
 
-      console.log('Customer Data:', customerForm.values);
+      console.log('Customer Data:', customerData);
       console.log('Invoice Data:', validInvoices);
 
       const baseURL = getBaseUrlClientSide();
@@ -80,7 +77,7 @@ export default function Page() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          customer: customerForm.getValues(),
+          customer: customerData,
           invoice: validInvoices,
         }),
       });
@@ -91,7 +88,7 @@ export default function Page() {
         toast.error(`Error: ${errorData.message || response.statusText}`);
       } else {
         toast.success('Invoice(s) successfully saved!');
-        customerForm.reset();
+        custFormRef.current.reset();
         invoiceFormsRef.current.forEach((form) => form.reset());
       }
     } catch (error) {
@@ -104,7 +101,12 @@ export default function Page() {
     <Container>
       <form onSubmit={submitDataDB}>
         <h3>Customer Information</h3>
-        <CustomerForm custForm={customerForm} formUsage="newInvoice" />
+        <CustomerForm
+          ref={custFormRef}
+          customerInitialValues={custFormInitialValues}
+          formUsage="newInvoice"
+        />
+        {/* <CustomerForm custForm={customerForm} formUsage="newInvoice" /> */}
         <br />
         <hr />
         <h3>Invoice Information</h3>
@@ -127,7 +129,7 @@ export default function Page() {
             >
               {invoiceCount > 1 && (
                 <Button
-                  className={styles.removeInvoiceButton}
+                  className={styles.removeButton}
                   type="button"
                   onClick={() => removeInvoice(index)}
                 >
@@ -138,7 +140,7 @@ export default function Page() {
                 </Button>
               )}
               {index === invoiceCount - 1 && invoiceCount < 3 && (
-                <Button className={styles.addInvoiceButton} type="button" onClick={addInvoiceCount}>
+                <Button className={styles.addButton} type="button" onClick={addInvoiceCount}>
                   <Flex gap="0.5rem" justify="center" align="center">
                     <AiFillFileAdd />
                     Add Invoice
