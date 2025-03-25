@@ -84,8 +84,6 @@ const CustomerForm = forwardRef<CustomerFormHandle, CustomerFormProps>(
       'Yukon',
     ];
 
-    console.log(customerForm);
-
     return (
       <>
         <div className={styles.formRow}>

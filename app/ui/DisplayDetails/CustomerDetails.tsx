@@ -94,8 +94,6 @@ export default function CustomerDetails({
     );
   });
 
-  console.log(customer.phoneNo);
-
   return (
     <div>
       <h3>Customer Details</h3>
@@ -112,7 +110,7 @@ export default function CustomerDetails({
       />
       <ItemDetail label="Country" value={customer.country} />
       <Flex mb="md" align="center">
-        <div style={{ fontWeight: '600', width: '150px' }}>Customer Activity: </div>
+        <div style={{ fontWeight: '600', width: '150px' }}>Customer Status: </div>
         <Pill style={statusStyle(customer.isActive ? 'Active' : 'Inactive')}>
           {customer.isActive ? 'Active' : 'Inactive'}
         </Pill>

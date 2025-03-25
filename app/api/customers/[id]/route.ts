@@ -86,19 +86,21 @@ export async function PUT(req: Request, { params }: Params) {
         const {updatedCustomer: customer} = await req.json();
         const param = await params;
         const id = paramID(param.id);
-        // console.log(id);
+        console.log(id);
 
         const {formattedValue, err: phoneErr} = validateAndFormatPhone(customer.phoneNo);
         if(phoneErr) {
-            throw new ValidationError(phoneErr)
+            throw new ValidationError(phoneErr);
         }
-
+        if(formattedValue == null) {
+            new ValidationError('There is an issue with the phone number, please check');
+        }
         const formattedPhone = formattedValue
 
         const customerUpdate: CustomerInsertValues = {
             firstName: formatCapitalizeString(customer.firstName).formattedValue,
             lastName: formatCapitalizeString(customer.lastName).formattedValue,
-            phoneNo: formattedPhone,
+            phoneNo: formattedPhone!,
             email: customer.email,
             companyName: formatCapitalizeString(customer.companyName).formattedValue,
             unitNo: customer.unitNo,
@@ -115,6 +117,9 @@ export async function PUT(req: Request, { params }: Params) {
         if(errCust !== null) {
             throw new ValidationError(errCust)
         }
+
+        // customerUpdate.phoneNo = customerUpdate.phoneNo.slice(2);
+        // console.log(customerUpdate);
         
         await db.transaction(async (tsx) => {
             await tsx.update(Customer).set(customerUpdate).where(eq(Customer.customerId, id));

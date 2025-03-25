@@ -90,7 +90,7 @@ export default function CustomerView({
         <div>
           <CustomerForm
             ref={custFormRef}
-            customerInitialValues={customer}
+            customerInitialValues={{ ...customer, phoneNo: customer.phoneNo.slice(2) }}
             formUsage="newCustomer"
           />
           <Flex mt="md" mb="lg" justify="space-between" align="center">
