@@ -93,4 +93,7 @@ const InvoiceForm = forwardRef<InvoiceFormHandle>((_, ref) => {
   );
 });
 
+// Labelling makes it easier to identify the form during debugging when using React DevTools
+InvoiceForm.displayName = 'InvoiceForm';
+
 export default InvoiceForm;
