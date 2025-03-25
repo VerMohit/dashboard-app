@@ -7,6 +7,7 @@ import { HiDocumentRemove } from 'react-icons/hi';
 import { toast, ToastContainer } from 'react-toastify';
 import { Button, Container, Flex } from '@mantine/core';
 import { CustomerFormValues } from '@/app/types/customerTypes';
+import { InvoiceFormValues } from '@/app/types/invoiceTypes';
 import CustomerForm, { CustomerFormHandle } from '@/app/ui/FormUI/CustomerForm';
 import InvoiceForm, { InvoiceFormHandle } from '@/app/ui/FormUI/InvoiceForm';
 import { getBaseUrlClientSide } from '@/app/utility/getBaseUrlClientSide';
@@ -19,6 +20,14 @@ export default function Page() {
     phoneNo: '',
     email: '',
     companyName: '',
+  };
+
+  const invoiceInitialValues: InvoiceFormValues = {
+    invoiceNumber: '',
+    invoiceDate: '',
+    amount: '',
+    amountPaid: '',
+    invoiceNotes: '',
   };
 
   const [invoiceCount, setInvoiceCount] = useState(1);
@@ -55,6 +64,7 @@ export default function Page() {
     }
 
     try {
+      //here is gere
       const invoiceData = await Promise.all(
         invoiceFormsRef.current.map((form) => form?.validateAndGetValues())
       );
@@ -106,7 +116,6 @@ export default function Page() {
           customerInitialValues={custFormInitialValues}
           formUsage="newInvoice"
         />
-        {/* <CustomerForm custForm={customerForm} formUsage="newInvoice" /> */}
         <br />
         <hr />
         <h3>Invoice Information</h3>
@@ -118,6 +127,7 @@ export default function Page() {
                   invoiceFormsRef.current[index] = el;
                 }
               }}
+              invoiceInitialValues={invoiceInitialValues}
             />
             <Flex
               mt="md"

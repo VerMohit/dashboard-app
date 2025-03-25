@@ -11,16 +11,17 @@ type InvoiceRequestData = {
     amountPaid: string,
     invoiceDate: string,
     invoiceStatus: "Paid" | "Unpaid",
+    invoiceNotes: string,
     isArchived: true | false
 }
 
 
 // For inserted invoice data (returned from DB after insertion)
 type InsertedInvoice = {
-    customerUUID: string,
-    customerId: number,
+    customerUUID?: string,
+    customerId?: number,
     invoiceNumber: string,
-    invoiceDate: string,
+    invoiceDate?: string, //check this
     amount: string,
     amountPaid: string,
     invoiceNotes: string,
@@ -35,7 +36,7 @@ type InvoiceTableData = {
 
 // Defining the shape for the values used in the form for creating new invoices
 type InvoiceFormValues = {
-    invoiceNo: string,
+    invoiceNumber: string,
     invoiceDate: string,
     amount: string,
     amountPaid: string,
