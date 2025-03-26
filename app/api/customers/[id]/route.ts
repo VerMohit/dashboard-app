@@ -2,7 +2,6 @@
 
 import { AppError, NotFoundError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
 import { CustomerInsertValues } from "@/app/types/customerTypes";
-import { InvoiceTableData } from "@/app/types/invoiceTypes";
 import { formatCapitalizeString, validateAndFormatPhone } from "@/app/utility/formatValues";
 import { validateCustomerInsertedData } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";

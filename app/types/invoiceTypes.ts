@@ -1,5 +1,26 @@
 import { CustomerRequestData } from "./customerTypes"
 
+type InvoiceIds = {
+    invoiceId: number,
+    invoiceUUID: string,
+}
+  
+type PrimaryInvoiceData = {
+invoiceNumber: string,
+amount: string,
+amountPaid: string,
+invoiceDate: string,
+invoiceStatus: "Paid" | "Unpaid",
+invoiceNotes: string,
+}
+
+type SecondaryInvoiceData = {
+isArchived: true | false
+}
+  
+
+type FetchedInvoiceData = InvoiceIds & PrimaryInvoiceData & SecondaryInvoiceData;
+
 // For form request data coming from fronend when submitting invoice related data
 type InvoiceRequestData = {
     invoiceId: number,
@@ -46,6 +67,7 @@ type InvoiceFormValues = {
 
 // need to specify `type` because of tsconfig.json settings having `isolatedModules` enabled
 export type {
+    FetchedInvoiceData,
     InvoiceRequestData, 
     InsertedInvoice, 
     InvoiceTableData, 

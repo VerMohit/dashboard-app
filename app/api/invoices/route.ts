@@ -6,7 +6,7 @@ import { mapDBErrorToHttpResponse } from "@/app/utility/mapDBErrorToHttpResponse
 import { validateInvoiceInsertedData, validatePaidStatus } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";
 import { Customer, Invoices } from "@/drizzle/database/schema";
-import { eq, ilike, or, and, desc, asc, sql } from "drizzle-orm";
+import { eq, ilike, or, and, desc, asc, sql, isNotNull } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 
@@ -51,9 +51,15 @@ export async function GET(req: Request) {
             );
         }
 
+        // Only return customers that have invoices associated with them
         const queryBuilder = db.select()
                                 .from(Customer)
-                                .leftJoin(Invoices, eq(Customer.customerId, Invoices.customerId))
+                                .leftJoin(Invoices, 
+                                          and(
+                                                eq(Customer.customerId, Invoices.customerId), 
+                                                isNotNull(Invoices.invoiceId),
+                                             )
+                                         )
                                 .where( and(...conditions))
 
         // Only apply orderBy if sortDate is not an empty string

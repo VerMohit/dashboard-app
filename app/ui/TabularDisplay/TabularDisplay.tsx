@@ -1,5 +1,6 @@
 import { Button, Container, Pill, Table } from '@mantine/core';
-import { CustomerRequestData } from '../../types/customerTypes';
+import { CustomerWithInvoiceData, requestData } from '@/app/types/SpecializedTypes';
+import { CustomerRequestData, FetchedCustomerData } from '../../types/customerTypes';
 import { InvoiceTableData } from '../../types/invoiceTypes';
 import { formatCurrency, formatDate } from '../../utility/formatValues';
 import styles from './TabularDisplay.module.css';
@@ -10,56 +11,14 @@ export function TabularDisplay({
   dataType,
 }: {
   tableHeadings: string[];
-  data: CustomerRequestData[] | InvoiceTableData[];
+  // data: CustomerRequestData[] | InvoiceTableData[];
+  data: requestData[];
   dataType: 'customer' | 'invoice';
 }) {
-  // // make into css class
-  // const rowStyle: React.CSSProperties = {
-  //   textAlign: 'left',
-  //   padding: '10px',
-  //   borderBottom: '1px solid #ddd', // Separator between rows
-  //   width: '500px',
-  //   whiteSpace: 'nowrap', // Prevent text wrapping
-  //   overflow: 'hidden', // Hide overflowed content
-  //   textOverflow: 'ellipsis', // Add ellipsis when text overflows
-  // };
-
-  // // make into css class
-  // const tableStyle: React.CSSProperties = {
-  //   border: '3px solid #ccc', // Border around the table
-  //   borderRadius: '10px', // Rounded corners
-  //   overflow: 'hidden', // Ensures border-radius is applied properly
-  //   height: '50vh',
-  //   overflowY: 'auto', // Enables scrolling when content exceeds max height
-  // };
-
-  // // make into css class
-  // const statusStyle = (status: string): React.CSSProperties => {
-  //   switch (status) {
-  //     case 'Paid':
-  //       return {
-  //         backgroundColor: '#A5D6A7',
-  //         textAlign: 'center',
-  //         fontWeight: 'bold',
-  //         width: '4rem',
-  //         display: 'inline-block', // Ensures the text is centered
-  //       };
-  //     case 'Unpaid':
-  //       return {
-  //         backgroundColor: '#FFCC80',
-  //         textAlign: 'center',
-  //         fontWeight: 'bold',
-  //         width: '4rem',
-  //         display: 'inline-block',
-  //       };
-  //     default:
-  //       return {};
-  //   }
-  // };
-
   const rows = data.map((entry) => {
     if (dataType === 'customer') {
-      const customer = entry as CustomerRequestData;
+      // const customer = entry as CustomerRequestData;
+      const customer = entry as FetchedCustomerData;
       return (
         <tr key={customer.customerId}>
           <td className={styles.tableRow}>{`${customer.firstName} ${customer.lastName}`}</td>
@@ -82,7 +41,7 @@ export function TabularDisplay({
       );
     }
 
-    const invoice = entry as InvoiceTableData;
+    const invoice = entry as CustomerWithInvoiceData;
 
     // Skip if a customer's invoice is null - don't display in table
     if (!invoice.invoices) {
