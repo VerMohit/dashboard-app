@@ -4,6 +4,7 @@ import React from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useDebouncedCallback } from 'use-debounce';
+import styles from './Search.module.css';
 
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
@@ -27,13 +28,14 @@ export default function Search({ placeholder }: { placeholder: string }) {
   }, 300);
 
   return (
-    <div>
-      <label htmlFor="search">Search</label>
-      <MagnifyingGlassIcon style={{ width: '20px' }} />
+    <div className={styles.search_container}>
+      {/* <label htmlFor="search">Search</label> */}
+      <MagnifyingGlassIcon className={styles.search_icon} />
       <input
         id="search"
         type="text"
         placeholder={placeholder}
+        className={styles.search_input}
         onChange={(e) => handleSearch(e.target.value)}
         defaultValue={searchParams.get('query') ?? ''}
       />

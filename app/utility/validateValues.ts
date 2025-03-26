@@ -4,6 +4,35 @@ import { CustomerInsertValues } from "../types/customerTypes";
 import { validateAndFormatZip } from "./formatValues";
 import { InsertedInvoice } from "../types/invoiceTypes";
 
+const defaultLength = 255;
+const shortLength = 15;
+const postalCodeLength = 7;
+const unitNoLength = 20;
+const notesLength = 50;
+const stateLength = 30;
+
+const custParamLengths = {
+  firstName: defaultLength,
+  lastName: defaultLength,
+  phoneNo: shortLength,
+  email: defaultLength,
+  companyName: defaultLength,
+  unitNo: unitNoLength,
+  street: defaultLength,
+  city: defaultLength,
+  postalCode: postalCodeLength,
+  state: stateLength,
+  country: defaultLength,
+  notes: notesLength,
+};
+
+const invoiceParamLengths = {
+  invoiceNumber: 50,
+  invoiceNotes: 1000,
+};
+
+
+
 const validateAmountFormat = (amountString: string) => {
   const isValidFormat = amountString.match(/^\d+(\.\d{0,2})?$/);
   const isPositive = parseFloat(amountString) >= 0;
@@ -42,29 +71,6 @@ const validateEmail = (email: string) => {
   return null
 }
 
-const defaultLength = 255;
-const shortLength = 15;
-const postalCodeLength = 7;
-const unitNoLength = 20;
-const notesLength = 50;
-const stateLength = 30;
-
-const custParamLengths = {
-  firstName: defaultLength,
-  lastName: defaultLength,
-  phoneNo: shortLength,
-  email: defaultLength,
-  companyName: defaultLength,
-  unitNo: unitNoLength,
-  street: defaultLength,
-  city: defaultLength,
-  postalCode: postalCodeLength,
-  state: stateLength,
-  country: defaultLength,
-  notes: notesLength,
-};
-
-
 
 const validateCustomerInsertedData = (data: CustomerInsertValues): string | null => {
 
@@ -91,12 +97,6 @@ const validateCustomerInsertedData = (data: CustomerInsertValues): string | null
   return null;
 }
 
-
-
-const invoiceParamLengths = {
-  invoiceNumber: 50,
-  invoiceNotes: 1000,
-};
 
 const validateInvoiceInsertedData = (data: InsertedInvoice): string | null => {
 
