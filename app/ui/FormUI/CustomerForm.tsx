@@ -1,10 +1,9 @@
 'use client';
 
-import { Dispatch, forwardRef, SetStateAction, useImperativeHandle, useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Select, TextInput } from '@mantine/core';
-import { hasLength, isEmail, isNotEmpty, matches, useForm, UseFormReturnType } from '@mantine/form';
-import { ValidationError } from '@/app/CustomErrors/CustomErrorrs';
-import { CustomerFormValues } from '@/app/types/customerTypes';
+import { hasLength, isEmail, isNotEmpty, matches, useForm } from '@mantine/form';
+import { CustomerFormData } from '@/app/types/SpecializedTypes';
 import {
   formatCapitalizeString,
   validateAndFormatPhone,
@@ -21,7 +20,8 @@ export type CustomerFormHandle = {
 
 type CustomerFormProps = {
   formUsage?: string;
-  customerInitialValues: CustomerFormValues;
+  // customerInitialValues: CustomerFormValues;
+  customerInitialValues: CustomerFormData;
 };
 
 const CustomerForm = forwardRef<CustomerFormHandle, CustomerFormProps>(
@@ -48,7 +48,7 @@ const CustomerForm = forwardRef<CustomerFormHandle, CustomerFormProps>(
       }),
     };
 
-    const customerForm = useForm<CustomerFormValues>({
+    const customerForm = useForm<CustomerFormData>({
       mode: 'uncontrolled',
       initialValues: customerInitialValues,
       validate: formFieldValidation,

@@ -1,7 +1,7 @@
 // This route.ts file is specifically for dynamic parameter [id]
 
 import { AppError, NotFoundError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
-import { CustomerInsertValues } from "@/app/types/customerTypes";
+import { CustomerData } from "@/app/types/SpecializedTypes";
 import { formatCapitalizeString, validateAndFormatPhone } from "@/app/utility/formatValues";
 import { validateCustomerInsertedData } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";
@@ -26,7 +26,7 @@ const paramID = (idStr: string) => {
     return id;
 }
 
-export async function GET(req: Request, {params}: Params) {
+export async function GET(_: Request, {params}: Params) {
     try {
         const param = await params;
         const id = paramID(param.id);
@@ -96,7 +96,9 @@ export async function PUT(req: Request, { params }: Params) {
         }
         const formattedPhone = formattedValue
 
-        const customerUpdate: CustomerInsertValues = {
+        console.log('here: ', formattedPhone)
+
+        const customerUpdate: CustomerData = {
             firstName: formatCapitalizeString(customer.firstName).formattedValue,
             lastName: formatCapitalizeString(customer.lastName).formattedValue,
             phoneNo: formattedPhone!,
@@ -151,7 +153,7 @@ export async function PUT(req: Request, { params }: Params) {
 }
 
 // Soft delete
-export async function DELETE(req: Request, { params }:Params) {
+export async function DELETE(_req: Request, { params }:Params) {
     try {
         
         const param = await params;

@@ -1,10 +1,10 @@
-import { CustomerRequestData } from '@/app/types/customerTypes';
-import { InvoiceRequestData, InvoiceTableData } from '@/app/types/invoiceTypes';
+import { FetchedCustomerAndInvoiceData } from '@/app/types/SpecializedTypes';
 import CustomerView from '@/app/ui/CustomerView';
 import { getBaseUrlServerSide } from '@/app/utility/getBaseUrlServerSide';
 
 type respData = {
-  data: InvoiceTableData[];
+  // data: InvoiceTableData[];
+  data: FetchedCustomerAndInvoiceData[];
   totalInvoiceDetails: {
     balanceDue: number;
     totalInvoices: number;
@@ -26,11 +26,11 @@ export default async function page({
   const response = await fetch(`${baseURL}customers/${custId}`);
   const { data, totalInvoiceDetails }: respData = await response.json();
 
-  const customer: CustomerRequestData = data[0].customers;
+  console.log(data);
 
-  const invoices: InvoiceRequestData[] = data
-    .filter((item) => item.invoices != null)
-    .map((item) => item.invoices);
+  const customer = data[0].customers;
+
+  const invoices = data.filter((item) => item.invoices != null).map((item) => item.invoices);
 
   return (
     <div>

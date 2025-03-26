@@ -1,7 +1,9 @@
 import { Button, Container, Pill, Table } from '@mantine/core';
-import { CustomerWithInvoiceData, requestData } from '@/app/types/SpecializedTypes';
-import { CustomerRequestData, FetchedCustomerData } from '../../types/customerTypes';
-import { InvoiceTableData } from '../../types/invoiceTypes';
+import {
+  CustomerWithInvoiceData,
+  FetchedCustomerData,
+  RequestData,
+} from '@/app/types/SpecializedTypes';
 import { formatCurrency, formatDate } from '../../utility/formatValues';
 import styles from './TabularDisplay.module.css';
 
@@ -11,8 +13,7 @@ export function TabularDisplay({
   dataType,
 }: {
   tableHeadings: string[];
-  // data: CustomerRequestData[] | InvoiceTableData[];
-  data: requestData[];
+  data: RequestData[];
   dataType: 'customer' | 'invoice';
 }) {
   const rows = data.map((entry) => {

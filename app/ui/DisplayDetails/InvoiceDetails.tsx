@@ -1,6 +1,7 @@
 import { Flex, Pill } from '@mantine/core';
-import { CustomerRequestData } from '@/app/types/customerTypes';
-import { InvoiceRequestData } from '@/app/types/invoiceTypes';
+// import { CustomerRequestData } from '@/app/types/customerTypes';
+// import { InvoiceRequestData } from '@/app/types/invoiceTypes';
+import { FetchedCustomerAndInvoiceData } from '@/app/types/SpecializedTypes';
 import {
   formatAddress,
   formatCurrency,
@@ -10,12 +11,15 @@ import {
 import ItemDetail from './ItemDetail';
 import WidgetDisplay from './WidgetDisplay';
 
-type InvoiceDetailsProps = {
-  customer: CustomerRequestData;
-  invoices: InvoiceRequestData;
-};
-
-export default function InvoiceDetails({ customer, invoices }: InvoiceDetailsProps) {
+// type InvoiceDetailsProps = {
+//   customer: CustomerRequestData;
+//   invoices: InvoiceRequestData;
+// };
+// export default function InvoiceDetails({ customer, invoices }: InvoiceDetailsProps) {
+export default function InvoiceDetails({
+  customers: customer,
+  invoices,
+}: FetchedCustomerAndInvoiceData) {
   // make into css class
   const statusStyle = (status: string): React.CSSProperties => {
     switch (status) {

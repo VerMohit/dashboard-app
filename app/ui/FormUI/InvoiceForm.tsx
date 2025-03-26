@@ -2,7 +2,7 @@
 
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { hasLength, isNotEmpty, useForm } from '@mantine/form';
-import { InvoiceFormValues } from '@/app/types/invoiceTypes';
+import { InvoiceFormData } from '@/app/types/SpecializedTypes';
 import { validateAndFormatAmount } from '@/app/utility/formatValues';
 import { validateAmountFormat, validateDateFormat } from '@/app/utility/validateValues';
 import FormInputField from './FormInputField';
@@ -15,14 +15,14 @@ export type InvoiceFormHandle = {
 };
 
 type InvoiceFormProps = {
-  invoiceInitialValues: InvoiceFormValues;
+  invoiceInitialValues: InvoiceFormData;
 };
 
 const InvoiceForm = forwardRef<InvoiceFormHandle, InvoiceFormProps>(
   ({ invoiceInitialValues }, ref) => {
     const [noteCount, setNoteCount] = useState(0);
 
-    const invoiceForm = useForm<InvoiceFormValues>({
+    const invoiceForm = useForm<InvoiceFormData>({
       mode: 'uncontrolled',
       initialValues: invoiceInitialValues,
       validate: {

@@ -64,7 +64,8 @@ export const Customer = pgTable('customers', {
     .unique()
     .notNull(),
   unitNo: varchar('unit_no', { length: 20 })
-    .default(''),
+    .default('')
+    .notNull(),
   street: varchar('street', { length: 255 })
     .notNull(),
   city: varchar('city', { length: 255 })
@@ -76,9 +77,11 @@ export const Customer = pgTable('customers', {
   country: varchar('country', { length: 255 })
     .notNull(),
   notes: varchar('notes', { length: 50 })
-    .default(''),
+    .default('')
+    .notNull(),
   isActive: boolean('is_active')
-    .default(true),   // Soft delete purposes
+    .default(true)   // Soft delete purposes
+    .notNull(),
 });
 
 // Invoices table
@@ -111,7 +114,8 @@ export const Invoices = pgTable('invoices', {
     .default(InvoiceStatus.Unpaid)
     .notNull(),
   invoiceNotes: varchar('invoice_notes', { length: 1000 })
-    .default(''),
+    .default('')
+    .notNull(),
   isArchived: boolean('is_archived')
     .default(false)
     .notNull(),  // Soft delete purposes

@@ -82,10 +82,12 @@ const formatCapitalizeString = (str: string) => {
 
 
 const formatPhoneNo = (phone: string) => {
+  console.log(phone)
   const countryCode = phone.slice(0, 2);
   const areaCode = phone.slice(2, 5);
   const exchange = phone.slice(5, 8);
   const extension = phone.slice(8);
+  console.log(`${countryCode} (${areaCode})-${exchange}-${extension}`)
   return `${countryCode} (${areaCode})-${exchange}-${extension}`;
   // return `(${areaCode})-${exchange}-${extension}`;
 };

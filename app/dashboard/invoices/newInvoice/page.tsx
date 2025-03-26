@@ -6,15 +6,17 @@ import { FaCheckSquare } from 'react-icons/fa';
 import { HiDocumentRemove } from 'react-icons/hi';
 import { toast, ToastContainer } from 'react-toastify';
 import { Button, Container, Flex } from '@mantine/core';
-import { CustomerFormValues } from '@/app/types/customerTypes';
-import { InvoiceFormValues } from '@/app/types/invoiceTypes';
+import { PrimaryInvoiceData } from '@/app/types/invoiceTypes';
+import { CustomerFormData } from '@/app/types/SpecializedTypes';
 import CustomerForm, { CustomerFormHandle } from '@/app/ui/FormUI/CustomerForm';
 import InvoiceForm, { InvoiceFormHandle } from '@/app/ui/FormUI/InvoiceForm';
 import { getBaseUrlClientSide } from '@/app/utility/getBaseUrlClientSide';
 import styles from '../../../ui/Button.module.css';
 
 export default function Page() {
-  const custFormInitialValues: CustomerFormValues = {
+  // const custFormInitialValues: CustomerFormValues = {
+  // const custFormInitialValues: CustomerFormData = {
+  const custFormInitialValues: CustomerFormData = {
     firstName: '',
     lastName: '',
     phoneNo: '',
@@ -22,7 +24,9 @@ export default function Page() {
     companyName: '',
   };
 
-  const invoiceInitialValues: InvoiceFormValues = {
+  // const invoiceInitialValues: InvoiceFormData = {
+  // const invoiceInitialValues: InvoiceFormData = {
+  const invoiceInitialValues: PrimaryInvoiceData = {
     invoiceNumber: '',
     invoiceDate: '',
     amount: '',

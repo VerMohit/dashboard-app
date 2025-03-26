@@ -2,7 +2,6 @@ import { AiFillFileAdd } from 'react-icons/ai';
 import { Button, Container, Flex } from '@mantine/core';
 import { lusitana } from '@/app/ui/fonts';
 import FilterOptions from '@/app/ui/FormUI/FilterOptions';
-import LinkButton from '@/app/ui/LinkButton';
 import Search from '@/app/ui/Search';
 import { DisplayContents } from '@/app/ui/TabularDisplay/DisplayContents';
 

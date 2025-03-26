@@ -1,6 +1,4 @@
-import { requestData } from '@/app/types/SpecializedTypes';
-import { CustomerRequestData, FetchedCustomerData } from '../../types/customerTypes';
-import { FetchedInvoiceData, InvoiceTableData } from '../../types/invoiceTypes';
+import { RequestData } from '@/app/types/SpecializedTypes';
 import { getBaseUrlServerSide } from '../../utility/getBaseUrlServerSide';
 import { TabularDisplay } from './TabularDisplay';
 
@@ -27,7 +25,7 @@ export async function DisplayContents({
     }
 
     // const data: CustomerRequestData[] | InvoiceTableData[] = await response.json();
-    const data: requestData[] = await response.json();
+    const data: RequestData[] = await response.json();
 
     // console.log(data);
 

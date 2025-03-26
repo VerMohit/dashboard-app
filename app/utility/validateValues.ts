@@ -3,6 +3,7 @@ import { ValidationError } from "../CustomErrors/CustomErrorrs";
 import { CustomerInsertValues } from "../types/customerTypes";
 import { validateAndFormatZip } from "./formatValues";
 import { InsertedInvoice } from "../types/invoiceTypes";
+import { CustomerData, InsertedCustomerData, InsertedInvoiceDataWithCustomerId, InvoiceFormData } from "../types/SpecializedTypes";
 
 const defaultLength = 255;
 const shortLength = 15;
@@ -72,7 +73,8 @@ const validateEmail = (email: string) => {
 }
 
 
-const validateCustomerInsertedData = (data: CustomerInsertValues): string | null => {
+// const validateCustomerInsertedData = (data: CustomerInsertValues): string | null => {
+const validateCustomerInsertedData = (data: InsertedCustomerData | CustomerData): string | null => {
 
   const emailErr = validateEmail(data.email);
   if(emailErr) {
@@ -98,7 +100,8 @@ const validateCustomerInsertedData = (data: CustomerInsertValues): string | null
 }
 
 
-const validateInvoiceInsertedData = (data: InsertedInvoice): string | null => {
+// const validateInvoiceInsertedData = (data: InsertedInvoice): string | null => {
+const validateInvoiceInsertedData = (data: InsertedInvoiceDataWithCustomerId | InvoiceFormData): string | null => {
 
   console.log(data)
 
