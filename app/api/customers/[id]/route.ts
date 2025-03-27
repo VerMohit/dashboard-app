@@ -85,7 +85,7 @@ export async function PUT(req: Request, { params }: Params) {
         const {updatedCustomer: customer} = await req.json();
         const param = await params;
         const id = paramID(param.id);
-        console.log(id);
+        // console.log(id);
 
         const {formattedValue, err: phoneErr} = validateAndFormatPhone(customer.phoneNo);
         if(phoneErr) {
@@ -94,7 +94,7 @@ export async function PUT(req: Request, { params }: Params) {
         if(formattedValue == null) {
             new ValidationError('There is an issue with the phone number, please check');
         }
-        const formattedPhone = formattedValue
+        const formattedPhone = `+1${formattedValue}`
 
         console.log('here: ', formattedPhone)
 

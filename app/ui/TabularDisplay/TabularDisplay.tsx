@@ -53,10 +53,10 @@ export function TabularDisplay({
     const amountDue = (parseFloat(invoices.amount) - parseFloat(invoices.amountPaid)).toFixed(2);
     return (
       <tr key={invoices.invoiceId}>
+        <td className={styles.tableRow}>{invoices.invoiceNumber}</td>
         <td className={styles.tableRow}>
           {customers.firstName} {customers.lastName}
         </td>
-        <td className={styles.tableRow}>{invoices.invoiceNumber}</td>
         <td className={styles.tableRow}>{customers.companyName}</td>
         <td className={styles.tableRow}>{formatCurrency(invoices.amount)}</td>
         <td className={styles.tableRow}>{formatCurrency(amountDue)}</td>

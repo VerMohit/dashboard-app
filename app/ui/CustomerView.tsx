@@ -38,6 +38,8 @@ export default function CustomerView({
       if (!updatedCustomer) {
         throw new ValidationError('One or more fields have errors.');
       }
+
+      console.log('before submission: ', updatedCustomer.phoneNo);
       const baseURL = getBaseUrlClientSide();
       const response = await fetch(`${baseURL}customers/${customer.customerId}`, {
         method: 'PUT',
@@ -58,7 +60,8 @@ export default function CustomerView({
       } else {
         toast.success('Customer successfully updated!');
         custFormRef.current.reset();
-        setCustomer(updatedCustomer);
+        console.log(updatedCustomer.phoneNo);
+        setCustomer({ ...updatedCustomer, phoneNo: `+1${updatedCustomer.phoneNo}` });
         setIsEditing(false);
       }
     }

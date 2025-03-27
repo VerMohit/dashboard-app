@@ -26,7 +26,7 @@ export default async function page({
   const response = await fetch(`${baseURL}customers/${custId}`);
   const { data, totalInvoiceDetails }: respData = await response.json();
 
-  console.log(data);
+  // console.log(data);
 
   const customer = data[0].customers;
 

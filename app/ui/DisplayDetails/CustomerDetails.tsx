@@ -96,7 +96,6 @@ export default function CustomerDetails({
   return (
     <div>
       <h3>Customer Details</h3>
-
       <ItemDetail label="Name" value={`${customer.firstName} ${customer.lastName}`} />
       <ItemDetail label="Email" value={customer.email} />
       <ItemDetail label="Phone" value={customer.phoneNo} formatMethod={formatPhoneNo} />
@@ -127,7 +126,14 @@ export default function CustomerDetails({
           widgetTitle="Total Unpaid Invoices"
           value={totalInvoiceDetails[0].totalUnpaidInvoices}
         />
-        <WidgetDisplay widgetTitle="Amount Due" value={`$${totalInvoiceDetails[0].balanceDue}`} />
+        <WidgetDisplay
+          widgetTitle="Amount Due"
+          value={
+            totalInvoiceDetails[0].balanceDue == null
+              ? '$0'
+              : `$${totalInvoiceDetails[0].balanceDue}`
+          }
+        />
       </Flex>
       <div style={{ fontWeight: '600' }}>Recent 5 invoices:</div>
       <Container mt="md" style={tableStyle}>
