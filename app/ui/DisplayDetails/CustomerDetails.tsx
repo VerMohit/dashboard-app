@@ -1,6 +1,5 @@
 import { Container, Flex, Pill, Table } from '@mantine/core';
-import { CustomerRequestData } from '@/app/types/customerTypes';
-import { InvoiceRequestData } from '@/app/types/invoiceTypes';
+import { FetchedCustomerData, FetchedInvoiceData } from '@/app/types/SpecializedTypes';
 import {
   formatAddress,
   formatCurrency,
@@ -11,8 +10,8 @@ import ItemDetail from './ItemDetail';
 import WidgetDisplay from './WidgetDisplay';
 
 type CustDetailsProps = {
-  customer: CustomerRequestData;
-  invoices: InvoiceRequestData[];
+  customer: FetchedCustomerData;
+  invoices: FetchedInvoiceData[];
   totalInvoiceDetails: {
     balanceDue: number;
     totalInvoices: number;
@@ -71,9 +70,11 @@ export default function CustomerDetails({
     }
   };
 
+  console.log(customer.phoneNo);
+
   // Displaying all invoices associated with customer
   const displayHeadings = ['Amount', 'Balance', 'Date', 'Invoice #', 'Paid Status'];
-  const rows = invoices.map((invoice: InvoiceRequestData) => {
+  const rows = invoices.map((invoice) => {
     // Skip if a customer's invoice is null - don't display in table
     if (!invoice) {
       return null;
@@ -95,7 +96,6 @@ export default function CustomerDetails({
   return (
     <div>
       <h3>Customer Details</h3>
-
       <ItemDetail label="Name" value={`${customer.firstName} ${customer.lastName}`} />
       <ItemDetail label="Email" value={customer.email} />
       <ItemDetail label="Phone" value={customer.phoneNo} formatMethod={formatPhoneNo} />
@@ -126,7 +126,14 @@ export default function CustomerDetails({
           widgetTitle="Total Unpaid Invoices"
           value={totalInvoiceDetails[0].totalUnpaidInvoices}
         />
-        <WidgetDisplay widgetTitle="Amount Due" value={`$${totalInvoiceDetails[0].balanceDue}`} />
+        <WidgetDisplay
+          widgetTitle="Amount Due"
+          value={
+            totalInvoiceDetails[0].balanceDue == null
+              ? '$0'
+              : `$${totalInvoiceDetails[0].balanceDue}`
+          }
+        />
       </Flex>
       <div style={{ fontWeight: '600' }}>Recent 5 invoices:</div>
       <Container mt="md" style={tableStyle}>

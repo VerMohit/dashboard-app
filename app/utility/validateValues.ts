@@ -3,6 +3,36 @@ import { ValidationError } from "../CustomErrors/CustomErrorrs";
 import { CustomerInsertValues } from "../types/customerTypes";
 import { validateAndFormatZip } from "./formatValues";
 import { InsertedInvoice } from "../types/invoiceTypes";
+import { CustomerData, InsertedCustomerData, InsertedInvoiceDataWithCustomerId, InvoiceFormData } from "../types/SpecializedTypes";
+
+const defaultLength = 255;
+const shortLength = 15;
+const postalCodeLength = 7;
+const unitNoLength = 20;
+const notesLength = 50;
+const stateLength = 30;
+
+const custParamLengths = {
+  firstName: defaultLength,
+  lastName: defaultLength,
+  phoneNo: shortLength,
+  email: defaultLength,
+  companyName: defaultLength,
+  unitNo: unitNoLength,
+  street: defaultLength,
+  city: defaultLength,
+  postalCode: postalCodeLength,
+  state: stateLength,
+  country: defaultLength,
+  notes: notesLength,
+};
+
+const invoiceParamLengths = {
+  invoiceNumber: 50,
+  invoiceNotes: 1000,
+};
+
+
 
 const validateAmountFormat = (amountString: string) => {
   const isValidFormat = amountString.match(/^\d+(\.\d{0,2})?$/);
@@ -42,31 +72,9 @@ const validateEmail = (email: string) => {
   return null
 }
 
-const defaultLength = 255;
-const shortLength = 15;
-const postalCodeLength = 7;
-const unitNoLength = 20;
-const notesLength = 50;
-const stateLength = 30;
 
-const custParamLengths = {
-  firstName: defaultLength,
-  lastName: defaultLength,
-  phoneNo: shortLength,
-  email: defaultLength,
-  companyName: defaultLength,
-  unitNo: unitNoLength,
-  street: defaultLength,
-  city: defaultLength,
-  postalCode: postalCodeLength,
-  state: stateLength,
-  country: defaultLength,
-  notes: notesLength,
-};
-
-
-
-const validateCustomerInsertedData = (data: CustomerInsertValues): string | null => {
+// const validateCustomerInsertedData = (data: CustomerInsertValues): string | null => {
+const validateCustomerInsertedData = (data: InsertedCustomerData | CustomerData): string | null => {
 
   const emailErr = validateEmail(data.email);
   if(emailErr) {
@@ -92,13 +100,8 @@ const validateCustomerInsertedData = (data: CustomerInsertValues): string | null
 }
 
 
-
-const invoiceParamLengths = {
-  invoiceNumber: 50,
-  invoiceNotes: 1000,
-};
-
-const validateInvoiceInsertedData = (data: InsertedInvoice): string | null => {
+// const validateInvoiceInsertedData = (data: InsertedInvoice): string | null => {
+const validateInvoiceInsertedData = (data: InsertedInvoiceDataWithCustomerId | InvoiceFormData): string | null => {
 
   console.log(data)
 

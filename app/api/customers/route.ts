@@ -1,6 +1,5 @@
 import { AppError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
-import { CustomerInsertValues } from "@/app/types/customerTypes";
-import { InsertedInvoice} from "@/app/types/invoiceTypes";
+import { FetchedCustomerData, InsertedCustomerData, InsertedInvoiceDataWithCustomerId } from "@/app/types/SpecializedTypes";
 import { formatCapitalizeString, validateAndFormatPhone } from "@/app/utility/formatValues";
 import { mapDBErrorToHttpResponse } from "@/app/utility/mapDBErrorToHttpResponse";
 import { validateCustomerInsertedData, validateInvoiceInsertedData, validatePaidStatus } from "@/app/utility/validateValues";
@@ -45,8 +44,8 @@ export async function GET(req: Request) {
         }
         
         // Wrap db query in a transaction
-        const customers = await db.transaction(async (tsx) => {
-            const result = await tsx.select()
+        const customers: FetchedCustomerData[] = await db.transaction(async (tsx) => {
+            const result: FetchedCustomerData[] = await tsx.select()
                                    .from(Customer)
                                    .where(and(...conditions))
                                    .orderBy(Customer.firstName);
@@ -95,7 +94,7 @@ export async function POST(req: Request) {
 
         await db.transaction(async (tsx) => {
 
-            const customerValues: CustomerInsertValues = {
+            const customerValues: InsertedCustomerData = {
                 customerUUID: uuid,
                 firstName: formatCapitalizeString(customer.firstName).formattedValue,
                 lastName: formatCapitalizeString(customer.lastName).formattedValue,
@@ -133,7 +132,7 @@ export async function POST(req: Request) {
                 
                 const insertedInvoice = invoice[0];
 
-                const invoiceValues: InsertedInvoice = {
+                const invoiceValues: InsertedInvoiceDataWithCustomerId = {
                     customerUUID: uuid,
                     customerId: newCustID,
                     invoiceNumber: insertedInvoice.invoiceNumber,

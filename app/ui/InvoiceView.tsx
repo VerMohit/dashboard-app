@@ -5,21 +5,22 @@ import { FaCheckSquare } from 'react-icons/fa';
 import { MdCancel, MdOutlinePublishedWithChanges } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import { Button, Container, Flex } from '@mantine/core';
-import { InvoiceRequestData } from '@/app/types/invoiceTypes';
 import { ValidationError } from '../CustomErrors/CustomErrorrs';
-import { CustomerRequestData } from '../types/customerTypes';
+import { FetchedCustomerData, FetchedInvoiceData } from '../types/SpecializedTypes';
 import { getBaseUrlClientSide } from '../utility/getBaseUrlClientSide';
 import InvoiceDetails from './DisplayDetails/InvoiceDetails';
 import InvoiceForm, { InvoiceFormHandle } from './FormUI/InvoiceForm';
 import styles from '../ui/Button.module.css';
 
 type CustViewProps = {
-  customerDetails: CustomerRequestData;
-  invoiceDetails: InvoiceRequestData;
+  customerDetails: FetchedCustomerData;
+  invoiceDetails: FetchedInvoiceData;
+  // customerDetails: CustomerRequestData;
+  // invoiceDetails: InvoiceRequestData;
 };
 
 export default function InvoiceView({ customerDetails, invoiceDetails }: CustViewProps) {
-  const [invoice, setInvoice] = useState<InvoiceRequestData>(invoiceDetails);
+  const [invoice, setInvoice] = useState<FetchedInvoiceData>(invoiceDetails);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const invoiceFormsRef = useRef<InvoiceFormHandle>(null);
 
@@ -97,7 +98,7 @@ export default function InvoiceView({ customerDetails, invoiceDetails }: CustVie
       ) : (
         <div>
           <InvoiceDetails
-            customer={customerDetails}
+            customers={customerDetails}
             invoices={{
               ...invoice,
               invoiceStatus: paidStatus(invoice.amount, invoice.amountPaid),

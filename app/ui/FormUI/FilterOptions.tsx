@@ -18,24 +18,6 @@ export default function FilterOptions({
   const [isActive, setIsActive] = useState('all');
 
   useEffect(() => {
-    // this works too but we simplified the logic using ternary operation
-    // if (whichCategory === 'invoice') {
-    //   const newsortDate = searchParams.get('sortDate');
-    //   if (newsortDate) {
-    //     setSortDate(newsortDate);
-    //   }
-
-    //   const newInvoiceStatus = searchParams.get('invoiceStatus');
-    //   if (newInvoiceStatus) {
-    //     setInvoiceStatus(newInvoiceStatus);
-    //   }
-    // } else {
-    //   const activeParam = searchParams.get('isActive');
-    //   if (activeParam) {
-    //     setIsActive(activeParam || 'all');
-    //   }
-    // }
-
     whichCategory === 'invoice'
       ? (setSortDate(searchParams.get('sortDate') || 'DESC'),
         setInvoiceStatus(searchParams.get('invoiceStatus') || 'All'))
@@ -44,7 +26,6 @@ export default function FilterOptions({
 
   return (
     <div>
-      {/* <div>Order By:</div> */}
       {whichCategory === 'invoice' ? (
         <>
           <RadioButtons

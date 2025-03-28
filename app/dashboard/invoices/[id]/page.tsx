@@ -1,10 +1,9 @@
-import { CustomerRequestData } from '@/app/types/customerTypes';
-import { InvoiceRequestData, InvoiceTableData } from '@/app/types/invoiceTypes';
+import { FetchedCustomerAndInvoiceData } from '@/app/types/SpecializedTypes';
 import InvoiceView from '@/app/ui/InvoiceView';
 import { getBaseUrlServerSide } from '@/app/utility/getBaseUrlServerSide';
 
 type respData = {
-  data: InvoiceTableData[];
+  data: FetchedCustomerAndInvoiceData[];
 };
 
 export default async function page({
@@ -23,9 +22,9 @@ export default async function page({
 
   //   console.log(data);
 
-  const customer: CustomerRequestData = data[0].customers;
+  const customer = data[0].customers;
 
-  const invoices: InvoiceRequestData = data[0].invoices;
+  const invoices = data[0].invoices;
 
   return (
     <div>

@@ -1,7 +1,7 @@
 // This route.ts file is specifically for dynamic parameter [id]
 
 import { AppError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
-import { InsertedInvoice } from "@/app/types/invoiceTypes";
+import { InvoiceFormData } from "@/app/types/SpecializedTypes";
 import { validateInvoiceInsertedData, validatePaidStatus } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";
 import { Customer, Invoices } from "@/drizzle/database/schema";
@@ -73,7 +73,8 @@ export async function PUT(req: Request, { params }: Params) {
         // console.log(id);
         // console.log(invoice)
 
-        const invoiceUpdate: InsertedInvoice = {
+        // const invoiceUpdate: InsertedInvoice = {
+        const invoiceUpdate: InvoiceFormData = {
             invoiceNumber: invoice.invoiceNumber,
             amount: invoice.amount,
             amountPaid: invoice.amountPaid,

@@ -6,17 +6,16 @@ import { MdCancel, MdOutlinePublishedWithChanges } from 'react-icons/md';
 import { TiUserDelete } from 'react-icons/ti';
 import { toast, ToastContainer } from 'react-toastify';
 import { Button, Container, Flex } from '@mantine/core';
-import { InvoiceRequestData } from '@/app/types/invoiceTypes';
 import { ValidationError } from '../CustomErrors/CustomErrorrs';
-import { CustomerRequestData } from '../types/customerTypes';
+import { FetchedCustomerData, FetchedInvoiceData } from '../types/SpecializedTypes';
 import { getBaseUrlClientSide } from '../utility/getBaseUrlClientSide';
 import CustomerDetails from './DisplayDetails/CustomerDetails';
 import CustomerForm, { CustomerFormHandle } from './FormUI/CustomerForm';
 import styles from '../ui/Button.module.css';
 
 type CustViewProps = {
-  customerDetails: CustomerRequestData;
-  invoiceDetails: InvoiceRequestData[];
+  customerDetails: FetchedCustomerData;
+  invoiceDetails: FetchedInvoiceData[];
   totalInvoiceDetails: {
     balanceDue: number;
     totalInvoices: number;
@@ -29,7 +28,7 @@ export default function CustomerView({
   invoiceDetails,
   totalInvoiceDetails,
 }: CustViewProps) {
-  const [customer, setCustomer] = useState<CustomerRequestData>(customerDetails);
+  const [customer, setCustomer] = useState<FetchedCustomerData>(customerDetails);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const custFormRef = useRef<CustomerFormHandle>(null);
 
@@ -39,6 +38,8 @@ export default function CustomerView({
       if (!updatedCustomer) {
         throw new ValidationError('One or more fields have errors.');
       }
+
+      console.log('before submission: ', updatedCustomer.phoneNo);
       const baseURL = getBaseUrlClientSide();
       const response = await fetch(`${baseURL}customers/${customer.customerId}`, {
         method: 'PUT',
@@ -59,7 +60,8 @@ export default function CustomerView({
       } else {
         toast.success('Customer successfully updated!');
         custFormRef.current.reset();
-        setCustomer(updatedCustomer);
+        console.log(updatedCustomer.phoneNo);
+        setCustomer({ ...updatedCustomer, phoneNo: `+1${updatedCustomer.phoneNo}` });
         setIsEditing(false);
       }
     }

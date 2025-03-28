@@ -1,8 +1,7 @@
 // This route.ts file is specifically for dynamic parameter [id]
 
 import { AppError, NotFoundError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
-import { CustomerInsertValues } from "@/app/types/customerTypes";
-import { InvoiceTableData } from "@/app/types/invoiceTypes";
+import { CustomerData } from "@/app/types/SpecializedTypes";
 import { formatCapitalizeString, validateAndFormatPhone } from "@/app/utility/formatValues";
 import { validateCustomerInsertedData } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";
@@ -27,7 +26,7 @@ const paramID = (idStr: string) => {
     return id;
 }
 
-export async function GET(req: Request, {params}: Params) {
+export async function GET(_: Request, {params}: Params) {
     try {
         const param = await params;
         const id = paramID(param.id);
@@ -86,7 +85,7 @@ export async function PUT(req: Request, { params }: Params) {
         const {updatedCustomer: customer} = await req.json();
         const param = await params;
         const id = paramID(param.id);
-        console.log(id);
+        // console.log(id);
 
         const {formattedValue, err: phoneErr} = validateAndFormatPhone(customer.phoneNo);
         if(phoneErr) {
@@ -95,9 +94,11 @@ export async function PUT(req: Request, { params }: Params) {
         if(formattedValue == null) {
             new ValidationError('There is an issue with the phone number, please check');
         }
-        const formattedPhone = formattedValue
+        const formattedPhone = `+1${formattedValue}`
 
-        const customerUpdate: CustomerInsertValues = {
+        console.log('here: ', formattedPhone)
+
+        const customerUpdate: CustomerData = {
             firstName: formatCapitalizeString(customer.firstName).formattedValue,
             lastName: formatCapitalizeString(customer.lastName).formattedValue,
             phoneNo: formattedPhone!,
@@ -152,7 +153,7 @@ export async function PUT(req: Request, { params }: Params) {
 }
 
 // Soft delete
-export async function DELETE(req: Request, { params }:Params) {
+export async function DELETE(_req: Request, { params }:Params) {
     try {
         
         const param = await params;

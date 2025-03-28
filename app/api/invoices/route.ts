@@ -1,12 +1,11 @@
 import { AppError, ConflictError, NotFoundError, ValidationError } from "@/app/CustomErrors/CustomErrorrs";
-import { CustomerFormValues } from "@/app/types/customerTypes";
-import { InsertedInvoice, InvoiceFormValues } from "@/app/types/invoiceTypes";
+import { CustomerIdentifier, FetchedInvoiceData, InsertedInvoiceDataWithCustomerId, RequestBody } from "@/app/types/SpecializedTypes";
 import { formatCapitalizeString } from "@/app/utility/formatValues";
 import { mapDBErrorToHttpResponse } from "@/app/utility/mapDBErrorToHttpResponse";
 import { validateInvoiceInsertedData, validatePaidStatus } from "@/app/utility/validateValues";
 import { db } from "@/drizzle/database/db";
 import { Customer, Invoices } from "@/drizzle/database/schema";
-import { eq, ilike, or, and, desc, asc, sql } from "drizzle-orm";
+import { eq, ilike, or, and, desc, asc, sql, isNotNull } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 
@@ -51,9 +50,15 @@ export async function GET(req: Request) {
             );
         }
 
+        // Only return customers that have invoices associated with them
         const queryBuilder = db.select()
                                 .from(Customer)
-                                .leftJoin(Invoices, eq(Customer.customerId, Invoices.customerId))
+                                .leftJoin(Invoices, 
+                                          and(
+                                                eq(Customer.customerId, Invoices.customerId), 
+                                                isNotNull(Invoices.invoiceId),
+                                             )
+                                         )
                                 .where( and(...conditions))
 
         // Only apply orderBy if sortDate is not an empty string
@@ -95,27 +100,26 @@ export async function GET(req: Request) {
     }
 }
 
-type RequestBody = {
-    customer: CustomerFormValues;
-    invoice: InvoiceFormValues[];
-}
+
 
 
 // Function processes all the invovices added concurrently. If a single promise fails, transaction rolls back and throws error
 //  if everything passes, then the invoiceUUID array will be returned
-const processInvoices = async (customerExists: { customerId: number; customerUUID: string}, invoice: InvoiceFormValues[]) => {
+// const processInvoices = async (customerExists: { customerId: number; customerUUID: string}, invoice: InvoiceFormValues[]) => {
+const processInvoices = async (customerExists: CustomerIdentifier, invoice: FetchedInvoiceData[]) => {
     return db.transaction(async (tsx) => {
         // Promise.all will handle async insert operations in parallel
         const invoiceUUIDs = await Promise.all(
             invoice.map(async (invoice) => {
-                const invoiceValues: InsertedInvoice = {
+                // const invoiceValues: InsertedInvoice = {
+                const invoiceValues: InsertedInvoiceDataWithCustomerId = {
                     customerUUID: customerExists.customerUUID,
                     customerId: customerExists.customerId,
                     invoiceNumber: invoice.invoiceNumber,
                     amount: invoice.amount,
                     amountPaid: invoice.amountPaid,
                     invoiceStatus: validatePaidStatus(invoice.amount, invoice.amountPaid),
-                    invoiceDate: invoice.invoiceDate.trim() || undefined, 
+                    invoiceDate: invoice.invoiceDate.trim() || new Date().toISOString().split('T')[0], //undefined, 
                     invoiceNotes: invoice.invoiceNotes,
                 };
                 
@@ -141,7 +145,6 @@ const processInvoices = async (customerExists: { customerId: number; customerUUI
 
 }
 
-
 export async function POST(req: Request) {
 
     try {
@@ -155,7 +158,7 @@ export async function POST(req: Request) {
             const phoneNo = customer.phoneNo;
             const email = customer.email;
 
-            const customerExists = await tsx.select({ customerId: Customer.customerId, customerUUID: Customer.customerUUID })
+            const customerExists: CustomerIdentifier[] = await tsx.select({ customerId: Customer.customerId, customerUUID: Customer.customerUUID })
                                             .from(Customer)
                                             .where(or(
                                                     eq(Customer.phoneNo, phoneNo),
@@ -178,7 +181,7 @@ export async function POST(req: Request) {
 
             // Process the invoices to be submitted into the db
             // This variable would be used for the invoice_document table when added in future
-            const invoiceUUID = await processInvoices(customerExists[0], invoice) 
+            const invoiceUUID: string[] = await processInvoices(customerExists[0], invoice) 
             console.log(invoiceUUID);
             
         });
