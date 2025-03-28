@@ -12,7 +12,6 @@ type CustomerWithInvoiceData = { customers: FetchedCustomerData } & {
 };
 
 type CustomerIdentifier = CustomerIds & CustomerUUID;
-// type InvoiceIdentifier = InvoiceIds & InvoiceUUID;
 
 // Type used for Display Contents and Tabular Display
 type RequestData = FetchedCustomerData | CustomerWithInvoiceData;
