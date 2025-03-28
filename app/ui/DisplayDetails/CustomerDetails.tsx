@@ -1,4 +1,4 @@
-import { Container, Flex, Pill, Table } from '@mantine/core';
+import { Box, Container, Flex, Pill, Table, Title } from '@mantine/core';
 import { FetchedCustomerData, FetchedInvoiceData } from '@/app/types/SpecializedTypes';
 import {
   formatAddress,
@@ -40,7 +40,7 @@ export default function CustomerDetails({
     border: '3px solid #ccc', // Border around the table
     borderRadius: '10px', // Rounded corners
     overflow: 'hidden', // Ensures border-radius is applied properly
-    height: '270px', //'32vh',
+    height: '310px', //'32vh',
     overflowY: 'auto', // Enables scrolling when content exceeds max height
   };
 
@@ -95,64 +95,92 @@ export default function CustomerDetails({
 
   return (
     <div>
-      <h3>Customer Details</h3>
-      <ItemDetail label="Name" value={`${customer.firstName} ${customer.lastName}`} />
-      <ItemDetail label="Email" value={customer.email} />
-      <ItemDetail label="Phone" value={customer.phoneNo} formatMethod={formatPhoneNo} />
+      <Title order={2} size="h2" mb="lg">
+        Customer Details
+      </Title>
+      <Box px="md">
+        <ItemDetail label="Name" value={`${customer.firstName} ${customer.lastName}`} />
+        <ItemDetail label="Email" value={customer.email} />
+        <ItemDetail label="Phone" value={customer.phoneNo} formatMethod={formatPhoneNo} />
 
-      <ItemDetail label="Unit Number" value={customer.unitNo} />
-      <ItemDetail
-        label="Address"
-        value={[customer.street, customer.city, customer.postalCode, customer.state]}
-        formatMethod={formatAddress}
-      />
-      <ItemDetail label="Country" value={customer.country} />
-      <Flex mb="md" align="center">
-        <div style={{ fontWeight: '600', width: '150px' }}>Customer Status: </div>
-        <Pill style={statusStyle(customer.isActive ? 'Active' : 'Inactive')}>
-          {customer.isActive ? 'Active' : 'Inactive'}
-        </Pill>
-      </Flex>
-      <ItemDetail label="Notes" value={customer.notes} />
+        <ItemDetail label="Unit Number" value={customer.unitNo} />
+        <ItemDetail
+          label="Address"
+          value={[customer.street, customer.city, customer.postalCode, customer.state]}
+          formatMethod={formatAddress}
+        />
+        <ItemDetail label="Country" value={customer.country} />
+        <Flex mb="md" align="center">
+          <div style={{ fontWeight: '600', width: '150px' }}>Customer Status: </div>
+          <Pill style={statusStyle(customer.isActive ? 'Active' : 'Inactive')}>
+            {customer.isActive ? 'Active' : 'Inactive'}
+          </Pill>
+        </Flex>
+        <ItemDetail label="Notes" value={customer.notes} />
+      </Box>
 
       <hr />
-      <h3>Invoice Details</h3>
-      <Flex mb="lg" justify="space-evenly" align="center">
-        <WidgetDisplay
-          widgetTitle="Total No. of Invoices"
-          value={totalInvoiceDetails[0].totalInvoices}
-        />
-        <WidgetDisplay
-          widgetTitle="Total Unpaid Invoices"
-          value={totalInvoiceDetails[0].totalUnpaidInvoices}
-        />
-        <WidgetDisplay
-          widgetTitle="Amount Due"
-          value={
-            totalInvoiceDetails[0].balanceDue == null
-              ? '$0'
-              : `$${totalInvoiceDetails[0].balanceDue}`
-          }
-        />
-      </Flex>
-      <div style={{ fontWeight: '600' }}>Recent 5 invoices:</div>
-      <Container mt="md" style={tableStyle}>
-        <Table stickyHeader stickyHeaderOffset={60}>
-          <thead>
-            <tr>
-              {displayHeadings.map((heading) => (
-                <th
-                  key={heading}
-                  style={{ textAlign: 'left', padding: '10px', borderBottom: '3px solid #ddd' }}
-                >
-                  {heading}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </Table>
-      </Container>
+
+      <Title order={2} size="h2" mb="lg" mt="lg">
+        Invoice Details
+      </Title>
+      <Box px="md">
+        <Flex mb="lg" columnGap="5rem" justify="center" align="center" pb="md">
+          <WidgetDisplay
+            widgetTitle="Total No. of Invoices"
+            value={totalInvoiceDetails[0].totalInvoices}
+          />
+          <WidgetDisplay
+            widgetTitle="Total Unpaid Invoices"
+            value={totalInvoiceDetails[0].totalUnpaidInvoices}
+          />
+          <WidgetDisplay
+            widgetTitle="Amount Due"
+            value={
+              totalInvoiceDetails[0].balanceDue == null
+                ? '$0'
+                : `$${totalInvoiceDetails[0].balanceDue}`
+            }
+          />
+        </Flex>
+
+        <Container mt="md" style={tableStyle}>
+          <Flex direction="column" style={{ position: 'relative' }}>
+            <Table stickyHeader stickyHeaderOffset={60}>
+              <thead>
+                <tr>
+                  {displayHeadings.map((heading) => (
+                    <th
+                      key={heading}
+                      style={{ textAlign: 'left', padding: '10px', borderBottom: '3px solid #ddd' }}
+                    >
+                      {heading}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>{rows}</tbody>
+            </Table>
+            <Box
+              style={{
+                position: 'sticky',
+                bottom: 0,
+                left: 0,
+                width: '100%',
+                padding: '8px',
+                backgroundColor: 'white', // Keep background consistent
+                borderTop: '1px solid #ddd', // Adds a separator from rows
+                textAlign: 'start', // Centers the text
+                fontWeight: 600,
+                color: '#9ca3af',
+                zIndex: 10, // Ensures it's above the table's scrollable content
+              }}
+            >
+              Recent 5 invoices
+            </Box>
+          </Flex>
+        </Container>
+      </Box>
     </div>
   );
 }

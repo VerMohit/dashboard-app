@@ -5,7 +5,7 @@ import { AiFillFileAdd } from 'react-icons/ai';
 import { FaCheckSquare } from 'react-icons/fa';
 import { HiDocumentRemove } from 'react-icons/hi';
 import { toast, ToastContainer } from 'react-toastify';
-import { Button, Container, Flex } from '@mantine/core';
+import { Box, Button, Container, Flex, Title } from '@mantine/core';
 import { PrimaryInvoiceData } from '@/app/types/invoiceTypes';
 import { CustomerFormData } from '@/app/types/SpecializedTypes';
 import CustomerForm, { CustomerFormHandle } from '@/app/ui/FormUI/CustomerForm';
@@ -112,9 +112,11 @@ export default function Page() {
   };
 
   return (
-    <Container>
+    <Box px="md">
       <form onSubmit={submitDataDB}>
-        <h3>Customer Information</h3>
+        <Title order={2} size="h2" mb="lg">
+          Customer Details
+        </Title>
         <CustomerForm
           ref={custFormRef}
           customerInitialValues={custFormInitialValues}
@@ -122,7 +124,10 @@ export default function Page() {
         />
         <br />
         <hr />
-        <h3>Invoice Information</h3>
+        <Title order={2} size="h2" mt="lg" mb="lg">
+          Invoice Details
+        </Title>
+        {/* <h3>Invoice Information</h3> */}
         {Array.from({ length: invoiceCount }).map((_, index) => (
           <div key={index}>
             <InvoiceForm
@@ -174,6 +179,6 @@ export default function Page() {
         </Flex>
       </form>
       <ToastContainer position="top-center" autoClose={3500} />
-    </Container>
+    </Box>
   );
 }

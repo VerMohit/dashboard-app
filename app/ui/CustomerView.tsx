@@ -5,7 +5,7 @@ import { FaCheckSquare } from 'react-icons/fa';
 import { MdCancel, MdOutlinePublishedWithChanges } from 'react-icons/md';
 import { TiUserDelete } from 'react-icons/ti';
 import { toast, ToastContainer } from 'react-toastify';
-import { Button, Container, Flex } from '@mantine/core';
+import { Box, Button, Container, Flex } from '@mantine/core';
 import { ValidationError } from '../CustomErrors/CustomErrorrs';
 import { FetchedCustomerData, FetchedInvoiceData } from '../types/SpecializedTypes';
 import { getBaseUrlClientSide } from '../utility/getBaseUrlClientSide';
@@ -87,7 +87,7 @@ export default function CustomerView({
   };
 
   return (
-    <Container>
+    <Box px="md">
       {isEditing ? (
         <div>
           <CustomerForm
@@ -152,6 +152,6 @@ export default function CustomerView({
         </div>
       )}
       <ToastContainer position="top-center" autoClose={5000} />
-    </Container>
+    </Box>
   );
 }
