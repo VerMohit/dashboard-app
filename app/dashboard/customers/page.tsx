@@ -5,8 +5,6 @@ import Search from '@/app/ui/Search';
 import { DisplayContents } from '@/app/ui/TabularDisplay/DisplayContents';
 import styles from '../../ui/Button.module.css';
 
-// UPDATED TYPES
-
 export default async function Page(queryParmas: {
   searchParams?: Promise<{
     query?: string;

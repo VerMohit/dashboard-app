@@ -6,22 +6,15 @@ export const getConflictFieldFromDetail = (detail: string): string | null => {
         return 'phone number';
     } else if (detail.includes('company_name')) {
         return 'company name';
-    } else if (getConflictInvoiceField(detail)) {
+    } else if (detail.includes('invoice_number')) {
         return 'invoice number';
     }
     return null;
 }
 
-export const getConflictInvoiceField = (detail: string): string | null => {
-    // if(detail.includes('invoice_number')) {
-    //     return 'invoice number';
-    // } else if(detail.includes('invoice_date')){
-    //     return 'issue date';
-    // }
-    // return null;
-
-    if (detail.includes('invoice_number')) {
-        return 'invoice number';
-    }
-    return null;
-}
+// export const getConflictInvoiceField = (detail: string): string | null => {
+//     if (detail.includes('invoice_number')) {
+//         return 'invoice number';
+//     }
+//     return null;
+// }

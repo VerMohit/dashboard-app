@@ -1,6 +1,6 @@
 .removeButton {
-    background-color: #FF6666; /* Darker warm red background */
-    color: #FFFFFF; /* White text */
+    background-color: #FF6666; 
+    color: #FFFFFF; 
     padding: 8px 16px;
     border: none;
     cursor: pointer;
@@ -8,11 +8,11 @@
   }
   
   .removeButton:hover {
-    background-color: #FF3737; /* Slightly darker on hover for feedback */
+    background-color: #FF3737; 
   }
   
   .addButton, .updateButton {
-    background-color: #34C759; /* Green background */
+    background-color: #34C759; 
     color: #FFFFFF;
     padding: 8px 16px;
     border: none;
@@ -21,11 +21,11 @@
   }
   
   .addButton:hover, .updateButton:hover {
-    background-color: #2AB54A; /* Slightly darker green on hover */
+    background-color: #2AB54A; 
   }
   
   .submitButton {
-    background-color: #2196F3; /* Blue background */
+    background-color: #2196F3; 
     color: #FFFFFF;
     padding: 8px 16px;
     border: none;
@@ -34,5 +34,5 @@
   }
   
   .submitButton:hover {
-    background-color: #1976D2; /* Slightly darker blue on hover */
+    background-color: #1976D2; 
   }

@@ -20,8 +20,6 @@ export default async function page({
   const response = await fetch(`${baseURL}invoices/${invoiceId}`);
   const { data }: respData = await response.json();
 
-  //   console.log(data);
-
   const customer = data[0].customers;
 
   const invoices = data[0].invoices;

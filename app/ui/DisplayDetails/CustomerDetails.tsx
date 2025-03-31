@@ -28,20 +28,20 @@ export default function CustomerDetails({
   const rowStyle: React.CSSProperties = {
     textAlign: 'left',
     padding: '10px',
-    borderBottom: '1px solid #ddd', // Separator between rows
+    borderBottom: '1px solid #ddd',
     width: '500px',
-    whiteSpace: 'nowrap', // Prevent text wrapping
-    overflow: 'hidden', // Hide overflowed content
-    textOverflow: 'ellipsis', // Add ellipsis when text overflows
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   };
 
   // make into css class
   const tableStyle: React.CSSProperties = {
-    border: '3px solid #ccc', // Border around the table
-    borderRadius: '10px', // Rounded corners
-    overflow: 'hidden', // Ensures border-radius is applied properly
-    height: '310px', //'32vh',
-    overflowY: 'auto', // Enables scrolling when content exceeds max height
+    border: '3px solid #ccc',
+    borderRadius: '10px',
+    overflow: 'hidden',
+    height: '310px',
+    overflowY: 'auto',
   };
 
   // make into css class
@@ -69,8 +69,6 @@ export default function CustomerDetails({
         return {};
     }
   };
-
-  console.log(customer.phoneNo);
 
   // Displaying all invoices associated with customer
   const displayHeadings = ['Amount', 'Balance', 'Date', 'Invoice #', 'Paid Status'];
@@ -168,12 +166,12 @@ export default function CustomerDetails({
                 left: 0,
                 width: '100%',
                 padding: '8px',
-                backgroundColor: 'white', // Keep background consistent
-                borderTop: '1px solid #ddd', // Adds a separator from rows
-                textAlign: 'start', // Centers the text
+                backgroundColor: 'white',
+                borderTop: '1px solid #ddd',
+                textAlign: 'start',
                 fontWeight: 600,
                 color: '#9ca3af',
-                zIndex: 10, // Ensures it's above the table's scrollable content
+                zIndex: 10,
               }}
             >
               Recent 5 invoices

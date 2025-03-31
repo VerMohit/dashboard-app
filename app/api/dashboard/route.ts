@@ -30,8 +30,6 @@ export async function GET(_: Request) {
                                           .groupBy(sql`EXTRACT(YEAR FROM ${Invoices.invoiceDate})`)
                                           .orderBy(sql`EXTRACT(YEAR FROM ${Invoices.invoiceDate})`);
 
-        // const currentYear = new Date().getFullYear();
-
         const currentYearsFigures = await db.select( { 
                                                         sales: sql<number>`COALESCE(SUM("amount"), 0)`
                                                                     .as('sales'),

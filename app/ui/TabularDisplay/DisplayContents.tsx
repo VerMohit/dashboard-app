@@ -2,8 +2,6 @@ import { RequestData } from '@/app/types/SpecializedTypes';
 import { getBaseUrlServerSide } from '../../utility/getBaseUrlServerSide';
 import { TabularDisplay } from './TabularDisplay';
 
-// export type requestData = { customers: FetchedCustomerData } | { invoices: FetchedInvoiceData };
-
 export async function DisplayContents({
   queryParams,
   apiResource,
@@ -24,10 +22,7 @@ export async function DisplayContents({
       throw new Error(`Error fetching data: ${response.statusText}`);
     }
 
-    // const data: CustomerRequestData[] | InvoiceTableData[] = await response.json();
     const data: RequestData[] = await response.json();
-
-    // console.log(data);
 
     return <TabularDisplay tableHeadings={displayHeadings} data={data} dataType={dataType} />;
   } catch (error) {

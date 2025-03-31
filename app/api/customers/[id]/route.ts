@@ -43,29 +43,28 @@ export async function GET(_: Request, {params}: Params) {
                                                         .from(Invoices)
                                                         .where(eq(Invoices.customerId, id))
 
-        const data = await db.transaction(async (tsx) => {
-            const result = await tsx.select()
-                                    .from(Customer)
-                                    .leftJoin(Invoices, eq(Customer.customerId, Invoices.customerId))
-                                    .where( eq( Customer.customerId, id ) )
-                                    .orderBy(desc(Invoices.invoiceDate))
-                                    .limit(5);
-            return result;
-        })
+
+        const data = await db.select()
+                             .from(Customer)
+                             .leftJoin(Invoices, eq(Customer.customerId, Invoices.customerId))
+                             .where( eq( Customer.customerId, id ) )
+                             .orderBy(desc(Invoices.invoiceDate))
+                             .limit(5);
+
+        // const data = await db.transaction(async (tsx) => {
+        //     const result = await tsx.select()
+        //                             .from(Customer)
+        //                             .leftJoin(Invoices, eq(Customer.customerId, Invoices.customerId))
+        //                             .where( eq( Customer.customerId, id ) )
+        //                             .orderBy(desc(Invoices.invoiceDate))
+        //                             .limit(5);
+        //     return result;
+        // })
 
         return NextResponse.json({data, totalInvoiceDetails })
 
     } catch (error) {
         console.log("error: ", error);  // debugging purposes
-
-        if (error instanceof AppError) {
-            return NextResponse.json(
-                error.toJSON(),
-                {
-                    status: error.statusCode
-                }
-            )
-        };
 
         return NextResponse.json(
             {
@@ -82,10 +81,27 @@ export async function GET(_: Request, {params}: Params) {
 
 export async function PUT(req: Request, { params }: Params) {
     try {
-        const {updatedCustomer: customer} = await req.json();
+        const {updatedCustomer: customer, isReactivated} = await req.json();
         const param = await params;
         const id = paramID(param.id);
         // console.log(id);
+
+        if(isReactivated) {
+            await db.transaction(async (tsx) => {
+                const reactivateCust = await tsx.update(Customer)
+                                                .set({isActive: true})
+                                                .where(eq(Customer.customerId, id))
+                                                .returning({customerId: Customer.customerId});
+                
+                if (reactivateCust.length === 0) {
+                    throw new NotFoundError(`Customer with id ${id} was not found`);
+                }       
+    
+                await tsx.update(Invoices).set({isArchived: false}).where(eq(Invoices.customerId, id));
+            });
+
+            return NextResponse.json({message: 'Customer is now active!'})
+        }
 
         const {formattedValue, err: phoneErr} = validateAndFormatPhone(customer.phoneNo);
         if(phoneErr) {
@@ -95,8 +111,6 @@ export async function PUT(req: Request, { params }: Params) {
             new ValidationError('There is an issue with the phone number, please check');
         }
         const formattedPhone = `+1${formattedValue}`
-
-        console.log('here: ', formattedPhone)
 
         const customerUpdate: CustomerData = {
             firstName: formatCapitalizeString(customer.firstName).formattedValue,

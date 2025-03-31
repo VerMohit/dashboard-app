@@ -20,7 +20,6 @@ export type CustomerFormHandle = {
 
 type CustomerFormProps = {
   formUsage?: string;
-  // customerInitialValues: CustomerFormValues;
   customerInitialValues: CustomerFormData;
 };
 
