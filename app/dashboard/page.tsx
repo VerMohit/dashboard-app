@@ -1,8 +1,5 @@
 import React from 'react';
-import { DonutChart } from '@mantine/charts';
 import { Box, Flex } from '@mantine/core';
-import { FetchedInvoiceData } from '../types/SpecializedTypes';
-import CustomDonutChart from '../ui/CustomDonutChart';
 import WidgetDisplay from '../ui/DisplayDetails/WidgetDisplay';
 import { LineGraph } from '../ui/LineGraph';
 import { formatCurrency } from '../utility/formatValues';
@@ -22,7 +19,7 @@ type RespBody = {
     totalInvoices: number;
     totalUnpaidInvoices: number;
   }[];
-  ccurrentMonthlyFigures: {
+  currentMonthlyFigures: {
     month: unknown;
     monthlySales: number;
     monthlyRevenue: number;
@@ -49,26 +46,26 @@ export default async function page() {
   }: RespBody = data;
 
   const currentFigures = currentYearsFigures[0];
-
   const currentYrSales = formatCurrency(String(currentFigures.sales));
   const balanceDueYrSales = formatCurrency(String(currentFigures.balanceDue));
 
   const currentYear = new Date().getFullYear();
 
-  console.log(currentMonthlyFigures);
+  const pastYrValues = pastXYearsFigures.flatMap((item) => [
+    item.annualSales,
+    item.annualRevenue,
+    item.annualBalanceDue,
+  ]);
 
-  // const currentYrGraphingInvoiceData = [
-  //   {
-  //     name: 'Paid',
-  //     value: currentFigures.totalInvoices - currentFigures.totalUnpaidInvoices,
-  //     color: 'royalBlue',
-  //   },
-  //   {
-  //     name: 'Unpaid',
-  //     value: currentFigures.totalUnpaidInvoices,
-  //     color: 'red',
-  //   },
-  // ];
+  const monthlyValues = currentMonthlyFigures.flatMap((item) => [
+    item.monthlySales,
+    item.monthlyRevenue,
+    item.monthlyBalanceDue,
+  ]);
+
+  // Finding the max of all these values
+  const maxYrValue = Math.max(...pastYrValues);
+  const maxMonthlyValue = Math.max(...monthlyValues);
 
   return (
     <Box px="md">
@@ -100,6 +97,7 @@ export default async function page() {
             ]}
             dataKey="year"
             xAxisLabel="Year"
+            maxYAxis={maxYrValue}
           />
           <LineGraph
             label={`Sales Statistics of ${currentYear}`}
@@ -111,6 +109,7 @@ export default async function page() {
             ]}
             dataKey="month"
             xAxisLabel="Month"
+            maxYAxis={maxMonthlyValue}
           />
         </Flex>
       </Flex>
