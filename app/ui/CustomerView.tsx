@@ -32,15 +32,39 @@ export default function CustomerView({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const custFormRef = useRef<CustomerFormHandle>(null);
 
-  const handleUpdate = async () => {
+  console.log(customer.isActive);
+
+  const reactivateCustomer = async (baseURL: string) => {
+    console.log('cutsomer has been reactivated!');
+
+    const response = await fetch(`${baseURL}customers/${customer.customerId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        isReactivated: true,
+      }),
+    });
+    console.log(response.ok);
+
+    if (!response.ok) {
+      console.log(`Couldn't complete request: ${response.statusText}`);
+      const errorData = await response.json();
+      toast.error(`Error: ${errorData.message || response.statusText}`);
+    } else {
+      toast.success('Customer successfully reactivated!');
+      setCustomer({ ...customer, isActive: !customer.isActive });
+    }
+  };
+
+  const updateCustomerDetails = async (baseURL: string) => {
     if (custFormRef.current) {
       const updatedCustomer = await custFormRef.current.validateAndGetValues();
       if (!updatedCustomer) {
         throw new ValidationError('One or more fields have errors.');
       }
 
-      console.log('before submission: ', updatedCustomer.phoneNo);
-      const baseURL = getBaseUrlClientSide();
       const response = await fetch(`${baseURL}customers/${customer.customerId}`, {
         method: 'PUT',
         headers: {
@@ -60,11 +84,20 @@ export default function CustomerView({
       } else {
         toast.success('Customer successfully updated!');
         custFormRef.current.reset();
-        console.log(updatedCustomer.phoneNo);
         setCustomer({ ...updatedCustomer, phoneNo: `+1${updatedCustomer.phoneNo}` });
         setIsEditing(false);
       }
     }
+  };
+
+  const handleUpdate = async (whatUpdate: 'reactivate' | 'customerDetails') => {
+    const baseURL = getBaseUrlClientSide();
+
+    if (whatUpdate === 'reactivate' && !customer.isActive) {
+      reactivateCustomer(baseURL);
+      return;
+    }
+    updateCustomerDetails(baseURL);
   };
 
   const handleDelete = async () => {
@@ -83,6 +116,7 @@ export default function CustomerView({
       toast.error(`Error: ${errorData.message || response.statusText}`);
     } else {
       toast.success('Customer successfully soft deleted!');
+      setCustomer({ ...customer, isActive: !customer.isActive });
     }
   };
 
@@ -109,7 +143,11 @@ export default function CustomerView({
               </Button>
             </Flex>
             <Flex mt="md" mb="md" justify="flex-end">
-              <Button className={styles.submitButton} type="button" onClick={handleUpdate}>
+              <Button
+                className={styles.submitButton}
+                type="button"
+                onClick={() => handleUpdate('customerDetails')}
+              >
                 <Flex gap="0.5rem" justify="center" align="center">
                   <FaCheckSquare />
                   Submit
@@ -128,12 +166,25 @@ export default function CustomerView({
           <Container>
             <Flex mt="md" mb="lg" justify="space-between" align="center">
               <Flex mt="md" mb="md" justify="flex-end">
-                <Button className={styles.removeButton} type="button" onClick={handleDelete}>
-                  <Flex gap="0.5rem" justify="center" align="center">
-                    <TiUserDelete />
-                    Delete Customer
-                  </Flex>
-                </Button>
+                {customer.isActive ? (
+                  <Button className={styles.removeButton} type="button" onClick={handleDelete}>
+                    <Flex gap="0.5rem" justify="center" align="center">
+                      <TiUserDelete />
+                      Delete Customer
+                    </Flex>
+                  </Button>
+                ) : (
+                  <Button
+                    className={styles.updateButton}
+                    type="button"
+                    onClick={() => handleUpdate('reactivate')}
+                  >
+                    <Flex gap="0.5rem" justify="center" align="center">
+                      <TiUserDelete />
+                      Reactivate Customer
+                    </Flex>
+                  </Button>
+                )}
               </Flex>
               <Flex mt="md" mb="md" justify="flex-end">
                 <Button

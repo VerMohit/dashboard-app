@@ -5,7 +5,7 @@ import { AiFillFileAdd } from 'react-icons/ai';
 import { FaCheckSquare } from 'react-icons/fa';
 import { HiDocumentRemove } from 'react-icons/hi';
 import { toast, ToastContainer } from 'react-toastify';
-import { Box, Button, Container, Flex, Title } from '@mantine/core';
+import { Box, Button, Flex, Title } from '@mantine/core';
 import { PrimaryInvoiceData } from '@/app/types/invoiceTypes';
 import { CustomerFormData } from '@/app/types/SpecializedTypes';
 import CustomerForm, { CustomerFormHandle } from '@/app/ui/FormUI/CustomerForm';
@@ -14,8 +14,6 @@ import { getBaseUrlClientSide } from '@/app/utility/getBaseUrlClientSide';
 import styles from '../../../ui/Button.module.css';
 
 export default function Page() {
-  // const custFormInitialValues: CustomerFormValues = {
-  // const custFormInitialValues: CustomerFormData = {
   const custFormInitialValues: CustomerFormData = {
     firstName: '',
     lastName: '',
@@ -24,8 +22,6 @@ export default function Page() {
     companyName: '',
   };
 
-  // const invoiceInitialValues: InvoiceFormData = {
-  // const invoiceInitialValues: InvoiceFormData = {
   const invoiceInitialValues: PrimaryInvoiceData = {
     invoiceNumber: '',
     invoiceDate: '',
@@ -54,8 +50,6 @@ export default function Page() {
   const submitDataDB = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    console.log('here :', custFormRef.current);
-
     if (!custFormRef.current) {
       toast.error('An error occured while the customer form loaded.');
       return;
@@ -80,8 +74,8 @@ export default function Page() {
         return;
       }
 
-      console.log('Customer Data:', customerData);
-      console.log('Invoice Data:', validInvoices);
+      // console.log('Customer Data:', customerData);
+      // console.log('Invoice Data:', validInvoices);
 
       const baseURL = getBaseUrlClientSide();
 
@@ -127,7 +121,6 @@ export default function Page() {
         <Title order={2} size="h2" mt="lg" mb="lg">
           Invoice Details
         </Title>
-        {/* <h3>Invoice Information</h3> */}
         {Array.from({ length: invoiceCount }).map((_, index) => (
           <div key={index}>
             <InvoiceForm

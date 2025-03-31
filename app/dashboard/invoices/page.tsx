@@ -4,8 +4,6 @@ import FilterOptions from '@/app/ui/FormUI/FilterOptions';
 import Search from '@/app/ui/Search';
 import { DisplayContents } from '@/app/ui/TabularDisplay/DisplayContents';
 
-// UPDATED TYPES
-
 export default async function Page(queryParmas: {
   searchParams?: Promise<{
     query?: string;

@@ -18,7 +18,6 @@ export function TabularDisplay({
 }) {
   const rows = data.map((entry) => {
     if (dataType === 'customer') {
-      // const customer = entry as CustomerRequestData;
       const customer = entry as FetchedCustomerData;
       return (
         <tr key={customer.customerId}>

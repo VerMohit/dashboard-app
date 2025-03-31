@@ -61,7 +61,7 @@ const InvoiceForm = forwardRef<InvoiceFormHandle, InvoiceFormProps>(
             labelName="Issue Date"
             formVar="invoiceDate"
             form={invoiceForm}
-            description="ex. YYYY-MM-DD (Note: If no date provided, defaults to today's date)"
+            description="ex. YYYY-MM-DD (Note: If not provided, defaults to today's date)"
             requiredProp={false}
           />
         </div>

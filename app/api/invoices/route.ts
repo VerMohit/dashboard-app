@@ -118,7 +118,7 @@ const processInvoices = async (customerExists: CustomerIdentifier, invoice: Fetc
                     amount: invoice.amount,
                     amountPaid: invoice.amountPaid,
                     invoiceStatus: validatePaidStatus(invoice.amount, invoice.amountPaid),
-                    invoiceDate: invoice.invoiceDate.trim() || new Date().toISOString().split('T')[0], //undefined, 
+                    invoiceDate: invoice.invoiceDate.trim() || new Date().toISOString().split('T')[0], 
                     invoiceNotes: invoice.invoiceNotes,
                 };
                 

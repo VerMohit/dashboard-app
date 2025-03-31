@@ -5,7 +5,7 @@ import { AiFillFileAdd } from 'react-icons/ai';
 import { FaCheckSquare } from 'react-icons/fa';
 import { HiDocumentRemove } from 'react-icons/hi';
 import { toast, ToastContainer } from 'react-toastify';
-import { Box, Button, Container, Flex, Title } from '@mantine/core';
+import { Box, Button, Flex, Title } from '@mantine/core';
 import { CustomerFormData, InvoiceFormData } from '@/app/types/SpecializedTypes';
 import CustomerForm, { CustomerFormHandle } from '@/app/ui/FormUI/CustomerForm';
 import InvoiceForm, { InvoiceFormHandle } from '@/app/ui/FormUI/InvoiceForm';
@@ -119,7 +119,6 @@ export default function Page() {
         <Title order={2} size="h1" mb="lg">
           Customer Details
         </Title>
-        {/* <h3>Customer Information</h3> */}
         <CustomerForm ref={custFormRef} customerInitialValues={custFormInitialValues} />
         {!addInvoice && (
           <Flex mt="md" mb="md" justify="space-between" align="center">

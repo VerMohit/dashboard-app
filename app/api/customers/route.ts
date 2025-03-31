@@ -44,13 +44,10 @@ export async function GET(req: Request) {
         }
         
         // Wrap db query in a transaction
-        const customers: FetchedCustomerData[] = await db.transaction(async (tsx) => {
-            const result: FetchedCustomerData[] = await tsx.select()
-                                   .from(Customer)
-                                   .where(and(...conditions))
-                                   .orderBy(Customer.firstName);
-            return result;
-        });
+        const customers: FetchedCustomerData[] = await db.select()
+                                                    .from(Customer)
+                                                    .where(and(...conditions))
+                                                    .orderBy(Customer.firstName);
 
         return NextResponse.json(customers);
     } catch (error: any) {

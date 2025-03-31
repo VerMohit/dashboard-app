@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { FaCheckSquare } from 'react-icons/fa';
 import { MdCancel, MdOutlinePublishedWithChanges } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
-import { Box, Button, Container, Flex } from '@mantine/core';
+import { Box, Button, Flex } from '@mantine/core';
 import { ValidationError } from '../CustomErrors/CustomErrorrs';
 import { FetchedCustomerData, FetchedInvoiceData } from '../types/SpecializedTypes';
 import { getBaseUrlClientSide } from '../utility/getBaseUrlClientSide';
@@ -15,8 +15,6 @@ import styles from '../ui/Button.module.css';
 type CustViewProps = {
   customerDetails: FetchedCustomerData;
   invoiceDetails: FetchedInvoiceData;
-  // customerDetails: CustomerRequestData;
-  // invoiceDetails: InvoiceRequestData;
 };
 
 export default function InvoiceView({ customerDetails, invoiceDetails }: CustViewProps) {
@@ -27,7 +25,7 @@ export default function InvoiceView({ customerDetails, invoiceDetails }: CustVie
   const handleUpdate = async () => {
     if (invoiceFormsRef.current) {
       const updatedInvoice = await invoiceFormsRef.current.validateAndGetValues();
-      console.log(updatedInvoice);
+      // console.log(updatedInvoice);
       if (!updatedInvoice) {
         throw new ValidationError('One or more fields have errors.');
       }
@@ -42,7 +40,7 @@ export default function InvoiceView({ customerDetails, invoiceDetails }: CustVie
         }),
       });
 
-      console.log(response.ok);
+      // console.log(response.ok);
 
       if (!response.ok) {
         console.log(`Couldn't complete request: ${response.statusText}`);

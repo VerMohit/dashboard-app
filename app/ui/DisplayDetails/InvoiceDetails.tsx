@@ -11,11 +11,6 @@ import {
 import ItemDetail from './ItemDetail';
 import WidgetDisplay from './WidgetDisplay';
 
-// type InvoiceDetailsProps = {
-//   customer: CustomerRequestData;
-//   invoices: InvoiceRequestData;
-// };
-// export default function InvoiceDetails({ customer, invoices }: InvoiceDetailsProps) {
 export default function InvoiceDetails({
   customers: customer,
   invoices,
@@ -30,7 +25,7 @@ export default function InvoiceDetails({
           textAlign: 'center',
           fontWeight: 'bold',
           width: '4rem',
-          display: 'inline-block', // Ensures the text is centered
+          display: 'inline-block',
         };
       case 'Unpaid':
       case 'Inactive':
@@ -52,7 +47,6 @@ export default function InvoiceDetails({
       <Title order={2} size="h2" mb="lg">
         Invoice Details
       </Title>
-      {/* <h3>Invoice Details</h3> */}
       <Box px="md">
         <ItemDetail label="Invoice Number" value={invoices.invoiceNumber} />
         <ItemDetail label="Date Issued" value={formatDate(invoices.invoiceDate)} />

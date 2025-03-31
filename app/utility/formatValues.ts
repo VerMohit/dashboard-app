@@ -13,6 +13,7 @@ const formatCurrency = (amountString: string, currencyCode = 'CAD') => {
   if (isNaN(amount)) {
     throw new Error("Invalid amount");
   }
+
   // API formats the number according to the specified currency and locale
   return new Intl.NumberFormat('en-CA', {
     style: 'currency',
@@ -58,7 +59,6 @@ const validateAndFormatZip = (zipCode: string) => {
 const validateAndFormatPhone = (phoneNo: string) => {
   
   const trimmedPhoneNo = phoneNo.trim();
-  console.log(trimmedPhoneNo)
   
   // Check if the trimmed phone number contains only digits
   const validPhoneRegex = /^\d+$/;
@@ -88,9 +88,7 @@ const formatPhoneNo = (phone: string) => {
   const areaCode = phone.slice(2, 5);
   const exchange = phone.slice(5, 8);
   const extension = phone.slice(8);
-  console.log(`${countryCode} (${areaCode})-${exchange}-${extension}`)
   return `${countryCode} (${areaCode})-${exchange}-${extension}`;
-  // return `(${areaCode})-${exchange}-${extension}`;
 };
 
 const formatAddress = (

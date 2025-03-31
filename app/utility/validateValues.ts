@@ -1,8 +1,6 @@
 import { InvoiceStatus } from "@/drizzle/lib/invoiceEnum";
 import { ValidationError } from "../CustomErrors/CustomErrorrs";
-import { CustomerInsertValues } from "../types/customerTypes";
 import { validateAndFormatZip } from "./formatValues";
-import { InsertedInvoice } from "../types/invoiceTypes";
 import { CustomerData, InsertedCustomerData, InsertedInvoiceDataWithCustomerId, InvoiceFormData } from "../types/SpecializedTypes";
 
 const defaultLength = 255;

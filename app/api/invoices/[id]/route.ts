@@ -30,13 +30,10 @@ export async function GET(_: Request, {params}: Params) {
         const param = await params;
         const id = paramID(param.id);
 
-        const data = await db.transaction(async (tsx) => {
-            const result = await tsx.select()
-                                    .from(Customer)
-                                    .leftJoin(Invoices, eq(Customer.customerId, Invoices.customerId))
-                                    .where( eq( Invoices.invoiceId, id ) );
-            return result;
-        })
+        const data = await db.select()
+                             .from(Customer)
+                             .leftJoin(Invoices, eq(Customer.customerId, Invoices.customerId))
+                             .where( eq( Invoices.invoiceId, id ) );
 
         return NextResponse.json({ data })
 
@@ -70,10 +67,7 @@ export async function PUT(req: Request, { params }: Params) {
         const {updatedInvoice: invoice} = await req.json();
         const param = await params;
         const id = paramID(param.id);
-        // console.log(id);
-        // console.log(invoice)
-
-        // const invoiceUpdate: InsertedInvoice = {
+        
         const invoiceUpdate: InvoiceFormData = {
             invoiceNumber: invoice.invoiceNumber,
             amount: invoice.amount,

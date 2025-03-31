@@ -172,14 +172,14 @@ async function seedDB() {
   const customerIds = insertedCustomers.map((c) => c.customerId);
   const customerUUIDs = insertedCustomers.map((c) => c.customerUUID);
   
-  // // Utility function to generate a random date
-  // const getRandomDate = () => {
-  //   const start = new Date(2023, 0, 1);
-  //   const end = new Date();
-  //   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-  //     .toISOString()
-  //     .split('T')[0];
-  // };
+  // Utility function to generate a random date
+  const getRandomDate = () => {
+    const start = new Date(2023, 0, 1);
+    const end = new Date();
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+      .toISOString()
+      .split('T')[0];
+  };
   
   // Insert invoices separately
   const invoices = await db.insert(Invoices).values([
@@ -303,9 +303,6 @@ async function seedDB() {
   ])
     .returning({ invoiceId: Invoices.invoiceId });
   
-  
-
-
     console.log('✅ Seeded database successfully!');
   } catch (error) {
     console.error('❌ Error seeding the database:', error);
