@@ -104,7 +104,7 @@ export default function InvoiceView({ customerDetails, invoiceDetails }: CustVie
               invoiceStatus: paidStatus(invoice.amount, invoice.amountPaid),
             }}
           />
-          <Flex mt="md" mb="md" justify="flex-end">
+          <Flex mt="md" mb="md" px="7rem" justify="flex-end">
             <Button
               className={styles.updateButton}
               type="button"

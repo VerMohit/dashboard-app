@@ -3,6 +3,7 @@ import { Box, Button, Container, Flex, Title } from '@mantine/core';
 import FilterOptions from '@/app/ui/FormUI/FilterOptions';
 import Search from '@/app/ui/Search';
 import { DisplayContents } from '@/app/ui/TabularDisplay/DisplayContents';
+import styles from '../../ui/Button.module.css';
 
 // UPDATED TYPES
 

@@ -10,7 +10,7 @@ export default function WidgetDisplay({
       style={{
         border: '3px solid #ccc', // Border around the table
         borderRadius: '10px',
-        width: '200px',
+        width: '250px',
         height: '100px',
         padding: '10px',
         textAlign: 'center',

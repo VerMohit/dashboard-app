@@ -105,7 +105,6 @@ export async function GET(req: Request) {
 
 // Function processes all the invovices added concurrently. If a single promise fails, transaction rolls back and throws error
 //  if everything passes, then the invoiceUUID array will be returned
-// const processInvoices = async (customerExists: { customerId: number; customerUUID: string}, invoice: InvoiceFormValues[]) => {
 const processInvoices = async (customerExists: CustomerIdentifier, invoice: FetchedInvoiceData[]) => {
     return db.transaction(async (tsx) => {
         // Promise.all will handle async insert operations in parallel

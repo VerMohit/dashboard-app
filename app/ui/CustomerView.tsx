@@ -125,30 +125,32 @@ export default function CustomerView({
             invoices={invoiceDetails}
             totalInvoiceDetails={totalInvoiceDetails}
           />{' '}
-          <Flex mt="md" mb="lg" justify="space-between" align="center">
-            <Flex mt="md" mb="md" justify="flex-end">
-              <Button className={styles.removeButton} type="button" onClick={handleDelete}>
-                <Flex gap="0.5rem" justify="center" align="center">
-                  <TiUserDelete />
-                  Delete Customer
-                </Flex>
-              </Button>
+          <Container>
+            <Flex mt="md" mb="lg" justify="space-between" align="center">
+              <Flex mt="md" mb="md" justify="flex-end">
+                <Button className={styles.removeButton} type="button" onClick={handleDelete}>
+                  <Flex gap="0.5rem" justify="center" align="center">
+                    <TiUserDelete />
+                    Delete Customer
+                  </Flex>
+                </Button>
+              </Flex>
+              <Flex mt="md" mb="md" justify="flex-end">
+                <Button
+                  className={styles.updateButton}
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(true);
+                  }}
+                >
+                  <Flex gap="0.5rem" justify="center" align="center">
+                    <MdOutlinePublishedWithChanges />
+                    Update Customer
+                  </Flex>
+                </Button>
+              </Flex>
             </Flex>
-            <Flex mt="md" mb="md" justify="flex-end">
-              <Button
-                className={styles.updateButton}
-                type="button"
-                onClick={() => {
-                  setIsEditing(true);
-                }}
-              >
-                <Flex gap="0.5rem" justify="center" align="center">
-                  <MdOutlinePublishedWithChanges />
-                  Update Customer
-                </Flex>
-              </Button>
-            </Flex>
-          </Flex>
+          </Container>
         </div>
       )}
       <ToastContainer position="top-center" autoClose={5000} />
