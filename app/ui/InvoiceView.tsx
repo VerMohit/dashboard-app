@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { FaCheckSquare } from 'react-icons/fa';
 import { MdCancel, MdOutlinePublishedWithChanges } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
-import { Button, Container, Flex } from '@mantine/core';
+import { Box, Button, Container, Flex } from '@mantine/core';
 import { ValidationError } from '../CustomErrors/CustomErrorrs';
 import { FetchedCustomerData, FetchedInvoiceData } from '../types/SpecializedTypes';
 import { getBaseUrlClientSide } from '../utility/getBaseUrlClientSide';
@@ -62,7 +62,7 @@ export default function InvoiceView({ customerDetails, invoiceDetails }: CustVie
   };
 
   return (
-    <Container>
+    <Box px="md">
       {isEditing ? (
         <div>
           <InvoiceForm ref={invoiceFormsRef} invoiceInitialValues={invoice} />
@@ -104,7 +104,7 @@ export default function InvoiceView({ customerDetails, invoiceDetails }: CustVie
               invoiceStatus: paidStatus(invoice.amount, invoice.amountPaid),
             }}
           />
-          <Flex mt="md" mb="md" justify="flex-end">
+          <Flex mt="md" mb="md" px="7rem" justify="flex-end">
             <Button
               className={styles.updateButton}
               type="button"
@@ -121,6 +121,6 @@ export default function InvoiceView({ customerDetails, invoiceDetails }: CustVie
         </div>
       )}
       <ToastContainer position="top-center" autoClose={5000} />
-    </Container>
+    </Box>
   );
 }

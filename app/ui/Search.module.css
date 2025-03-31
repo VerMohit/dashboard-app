@@ -1,6 +1,7 @@
 .search_container {
     position: relative;
     width: 100%;
+    margin-bottom: 2rem;
   }
   
   .search_icon {

@@ -5,7 +5,7 @@ import { FaCheckSquare } from 'react-icons/fa';
 import { MdCancel, MdOutlinePublishedWithChanges } from 'react-icons/md';
 import { TiUserDelete } from 'react-icons/ti';
 import { toast, ToastContainer } from 'react-toastify';
-import { Button, Container, Flex } from '@mantine/core';
+import { Box, Button, Container, Flex } from '@mantine/core';
 import { ValidationError } from '../CustomErrors/CustomErrorrs';
 import { FetchedCustomerData, FetchedInvoiceData } from '../types/SpecializedTypes';
 import { getBaseUrlClientSide } from '../utility/getBaseUrlClientSide';
@@ -87,7 +87,7 @@ export default function CustomerView({
   };
 
   return (
-    <Container>
+    <Box px="md">
       {isEditing ? (
         <div>
           <CustomerForm
@@ -125,33 +125,35 @@ export default function CustomerView({
             invoices={invoiceDetails}
             totalInvoiceDetails={totalInvoiceDetails}
           />{' '}
-          <Flex mt="md" mb="lg" justify="space-between" align="center">
-            <Flex mt="md" mb="md" justify="flex-end">
-              <Button className={styles.removeButton} type="button" onClick={handleDelete}>
-                <Flex gap="0.5rem" justify="center" align="center">
-                  <TiUserDelete />
-                  Delete Customer
-                </Flex>
-              </Button>
+          <Container>
+            <Flex mt="md" mb="lg" justify="space-between" align="center">
+              <Flex mt="md" mb="md" justify="flex-end">
+                <Button className={styles.removeButton} type="button" onClick={handleDelete}>
+                  <Flex gap="0.5rem" justify="center" align="center">
+                    <TiUserDelete />
+                    Delete Customer
+                  </Flex>
+                </Button>
+              </Flex>
+              <Flex mt="md" mb="md" justify="flex-end">
+                <Button
+                  className={styles.updateButton}
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(true);
+                  }}
+                >
+                  <Flex gap="0.5rem" justify="center" align="center">
+                    <MdOutlinePublishedWithChanges />
+                    Update Customer
+                  </Flex>
+                </Button>
+              </Flex>
             </Flex>
-            <Flex mt="md" mb="md" justify="flex-end">
-              <Button
-                className={styles.updateButton}
-                type="button"
-                onClick={() => {
-                  setIsEditing(true);
-                }}
-              >
-                <Flex gap="0.5rem" justify="center" align="center">
-                  <MdOutlinePublishedWithChanges />
-                  Update Customer
-                </Flex>
-              </Button>
-            </Flex>
-          </Flex>
+          </Container>
         </div>
       )}
       <ToastContainer position="top-center" autoClose={5000} />
-    </Container>
+    </Box>
   );
 }

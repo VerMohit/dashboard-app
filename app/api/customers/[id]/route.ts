@@ -33,11 +33,11 @@ export async function GET(_: Request, {params}: Params) {
 
         // Compute the remaining balanceDue sum using Drizzle's raw query functionality
         const totalInvoiceDetails = await db.select({ 
-                                                        balanceDue: sql<number>`SUM("amount" - "amount_paid")`
+                                                        balanceDue: sql<number>`COALESCE(SUM("amount" - "amount_paid"), 0)`
                                                                         .as('balanceDue'),
-                                                        totalInvoices: sql<number>`COUNT(*)`
+                                                        totalInvoices: sql<number>`COALESCE(COUNT(*), 0)`
                                                                         .as('totalInvoices'),
-                                                        totalUnpaidInvoices: sql<number>`COUNT(CASE WHEN "invoice_status" = 'Unpaid' THEN 1 END)`
+                                                        totalUnpaidInvoices: sql<number>`COALESCE(COUNT(CASE WHEN "invoice_status" = 'Unpaid' THEN 1 END), 0)`
                                                                         .as('totalUnpaidInvoices')
                                                     })
                                                         .from(Invoices)
@@ -118,9 +118,6 @@ export async function PUT(req: Request, { params }: Params) {
         if(errCust !== null) {
             throw new ValidationError(errCust)
         }
-
-        // customerUpdate.phoneNo = customerUpdate.phoneNo.slice(2);
-        // console.log(customerUpdate);
         
         await db.transaction(async (tsx) => {
             await tsx.update(Customer).set(customerUpdate).where(eq(Customer.customerId, id));

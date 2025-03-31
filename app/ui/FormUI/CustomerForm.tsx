@@ -85,7 +85,7 @@ const CustomerForm = forwardRef<CustomerFormHandle, CustomerFormProps>(
     ];
 
     return (
-      <>
+      <div>
         <div className={styles.formRow}>
           <FormInputField
             labelName="First Name"
@@ -187,7 +187,7 @@ const CustomerForm = forwardRef<CustomerFormHandle, CustomerFormProps>(
             />
           </>
         )}
-      </>
+      </div>
     );
   }
 );
